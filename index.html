@@ -3,1049 +3,2311 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Power BI Dashboard Transformation – Azhar Amirul Abid</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<title>Power BI Dashboard Transformation — MCCI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,400..700&family=Inter+Tight:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root {
-  --navy:   #0A1F5C;
-  --blue:   #1E40AF;
-  --blue2:  #2563EB;
-  --blue3:  #3B82F6;
-  --accent: #F59E0B;
-  --gold:   #D97706;
-  --bg:     #EEF2FF;
-  --bg2:    #E0EAFF;
-  --surface:#FFFFFF;
-  --glass:  rgba(255,255,255,0.78);
-  --glass2: rgba(255,255,255,0.5);
-  --border: rgba(30,64,175,0.14);
-  --border2:rgba(30,64,175,0.07);
-  --text:   #0A1F5C;
-  --text2:  #3B5299;
-  --gray:   #6B7EB5;
-  --shadow: 0 8px 32px rgba(10,31,92,0.12);
-  --shadow2:0 2px 12px rgba(10,31,92,0.07);
-}
+  /* ─────────────────────────────────────────────
+     DESIGN SYSTEM — LIGHT + BLUE · EXECUTIVE
+  ───────────────────────────────────────────── */
+  :root {
+    --ink:        #0A1F4F;
+    --ink-soft:   #2C3E68;
+    --navy:       #132F6B;
+    --blue:       #2155C8;
+    --blue-deep:  #0E3FA6;
+    --sky:        #5C8FD6;
+    --sky-soft:   #8FB4E5;
+    --light-blue: #E8EFFB;
+    --paper:      #F7F9FD;
+    --paper-2:    #EEF3FB;
+    --white:      #FFFFFF;
+    --gold:       #C89B3C;
+    --green:      #1E8F5C;
+    --red:        #C0392B;
+    --line:       rgba(10, 31, 79, 0.10);
+    --line-soft:  rgba(10, 31, 79, 0.06);
+    --text-muted: #5C6A8C;
+    --text-soft:  #3A4A6F;
+    --shadow-sm:  0 2px 8px rgba(10,31,79,0.04), 0 1px 3px rgba(10,31,79,0.05);
+    --shadow-md:  0 8px 24px rgba(10,31,79,0.06), 0 2px 6px rgba(10,31,79,0.04);
+    --shadow-lg:  0 24px 60px rgba(10,31,79,0.10), 0 8px 20px rgba(10,31,79,0.06);
+    --shadow-xl:  0 40px 100px rgba(10,31,79,0.14), 0 12px 30px rgba(10,31,79,0.08);
+    --glow-blue:  0 10px 40px rgba(33,85,200,0.35), 0 4px 12px rgba(33,85,200,0.25);
+    --grad-blue:  linear-gradient(135deg, #2155C8 0%, #5C8FD6 100%);
+    --grad-deep:  linear-gradient(135deg, #0E3FA6 0%, #2155C8 50%, #5C8FD6 100%);
+    --grad-paper: linear-gradient(180deg, #FFFFFF 0%, #F7F9FD 60%, #EEF3FB 100%);
+    --grad-accent: linear-gradient(135deg, #132F6B 0%, #2155C8 100%);
+    --ease-out:   cubic-bezier(.2, .7, .2, 1);
+    --ease-soft:  cubic-bezier(.4, 0, .2, 1);
+  }
 
-*{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow:hidden;height:100vh;width:100vw;}
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-/* DECK */
-.deck{width:100%;height:100%;position:relative;}
-.slide{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .5s cubic-bezier(.4,0,.2,1),transform .5s cubic-bezier(.4,0,.2,1);transform:translateY(18px);overflow:hidden;}
-.slide.active{opacity:1;pointer-events:all;transform:translateY(0);}
+  html, body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+  }
 
-/* THEMES */
-.s-cover{background:linear-gradient(140deg,#061548 0%,#0D2278 40%,#1A52C8 100%);color:#fff;}
-.s-light{background:linear-gradient(145deg,#F0F5FF 0%,#E6EFFE 60%,#EEF2FF 100%);color:var(--text);}
-.s-white{background:linear-gradient(145deg,#FFFFFF 0%,#F5F8FF 100%);color:var(--text);}
-.s-blue{background:linear-gradient(140deg,#1A3BAF 0%,#1D4ED8 60%,#2563EB 100%);color:#fff;}
-.s-navy{background:linear-gradient(140deg,#0A1F5C 0%,#0D2778 60%,#0F2E8A 100%);color:#fff;}
+  body {
+    font-family: 'Inter Tight', system-ui, sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    font-feature-settings: "ss01", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.01em;
+  }
 
-/* GRID DECORATION */
-.grid-l{position:absolute;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(30,64,175,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(30,64,175,.04) 1px,transparent 1px);background-size:60px 60px;}
-.grid-w{position:absolute;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);background-size:60px 60px;}
+  /* ─────────────────────────────────────────────
+     SLIDE ENGINE — FADE + SOFT ZOOM
+  ───────────────────────────────────────────── */
+  .deck {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+  }
 
-/* NAV */
-.nav{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);z-index:999;display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.88);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:50px;padding:9px 22px;box-shadow:0 4px 24px rgba(10,31,92,.15);}
-.nav button{background:none;border:none;color:var(--navy);font-size:17px;cursor:pointer;padding:5px 10px;border-radius:8px;transition:background .2s;font-family:'DM Sans',sans-serif;}
-.nav button:hover{background:rgba(10,31,92,.08);}
-.nav .counter{font-family:'Syne',sans-serif;font-size:12px;color:var(--gray);min-width:52px;text-align:center;letter-spacing:1px;}
-.dots{display:flex;gap:5px;align-items:center;}
-.dot{width:7px;height:7px;border-radius:50%;background:rgba(10,31,92,.2);cursor:pointer;transition:all .25s;}
-.dot.on{background:var(--blue2);transform:scale(1.4);}
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    transform: scale(0.965);
+    pointer-events: none;
+    transition:
+      opacity 700ms var(--ease-out),
+      transform 900ms var(--ease-out),
+      filter 700ms var(--ease-out);
+    filter: blur(6px);
+    overflow: hidden;
+  }
+  .slide.active {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+    filter: blur(0);
+    z-index: 2;
+  }
+  .slide.leaving {
+    opacity: 0;
+    transform: scale(1.04);
+    filter: blur(8px);
+  }
 
-/* PROGRESS */
-.progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--blue2),var(--accent));transition:width .4s ease;z-index:9999;box-shadow:0 0 8px rgba(37,99,235,.4);}
+  /* Slide backgrounds */
+  .bg-paper { background: var(--grad-paper); }
+  .bg-blue  { background: linear-gradient(135deg, #F2F6FE 0%, #E4ECFA 60%, #D6E2F7 100%); }
+  .bg-deep  {
+    background:
+      radial-gradient(circle at 20% 20%, rgba(92,143,214,0.18), transparent 55%),
+      radial-gradient(circle at 80% 80%, rgba(33,85,200,0.22), transparent 60%),
+      linear-gradient(135deg, #0A1F4F 0%, #132F6B 50%, #0E3FA6 100%);
+    color: var(--white);
+  }
 
-/* LAYOUT */
-.slide-inner{flex:1;display:flex;flex-direction:column;padding:46px 66px 74px;position:relative;z-index:1;}
-.slide-inner.center{justify-content:center;align-items:center;text-align:center;}
-.si-scroll{flex:1;display:flex;flex-direction:column;padding:46px 66px 74px;position:relative;z-index:1;overflow-y:auto;}
-.si-scroll::-webkit-scrollbar{width:5px;}
-.si-scroll::-webkit-scrollbar-thumb{background:rgba(37,99,235,.25);border-radius:10px;}
+  /* ─────────────────────────────────────────────
+     DECORATIVE LAYERS
+  ───────────────────────────────────────────── */
+  .grain {
+    position: absolute; inset: 0; pointer-events: none; opacity: 0.4; z-index: 1;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.08 0 0 0 0 0.15 0 0 0 0 0.30 0 0 0 0.04 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .grid-lines {
+    position: absolute; inset: 0; pointer-events: none; z-index: 1; opacity: 0.6;
+    background-image:
+      linear-gradient(var(--line-soft) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+    background-size: 80px 80px;
+    mask-image: radial-gradient(ellipse at center, black 40%, transparent 90%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 40%, transparent 90%);
+  }
+  .bg-deep .grid-lines {
+    background-image:
+      linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+  }
+  .blob {
+    position: absolute; border-radius: 50%; pointer-events: none;
+    filter: blur(80px); opacity: 0.5; z-index: 0;
+  }
+  .blob-1 { width: 520px; height: 520px; background: var(--sky-soft); top: -120px; right: -120px; opacity: 0.35; }
+  .blob-2 { width: 420px; height: 420px; background: var(--blue); bottom: -140px; left: -100px; opacity: 0.15; }
+  .bg-deep .blob-1 { background: var(--blue); opacity: 0.4; }
+  .bg-deep .blob-2 { background: var(--sky); opacity: 0.25; }
 
-/* KICKERS */
-.kk{font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--blue2);margin-bottom:9px;display:flex;align-items:center;gap:8px;}
-.kk::before{content:'';display:inline-block;width:18px;height:2px;background:var(--blue2);border-radius:2px;}
-.kk-w{font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.7);margin-bottom:9px;display:flex;align-items:center;gap:8px;}
-.kk-w::before{content:'';display:inline-block;width:18px;height:2px;background:var(--accent);border-radius:2px;}
-.tag-pill{display:inline-block;background:linear-gradient(135deg,var(--blue2),var(--blue3));color:#fff;font-family:'Syne',sans-serif;font-weight:700;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:4px 14px;border-radius:100px;margin-bottom:16px;box-shadow:0 2px 12px rgba(37,99,235,.3);}
-.tag-pill-l{display:inline-block;background:rgba(37,99,235,.1);color:var(--blue2);font-family:'Syne',sans-serif;font-weight:700;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:4px 14px;border-radius:100px;margin-bottom:16px;border:1px solid rgba(37,99,235,.2);}
+  .corner-mark {
+    position: absolute; top: 28px; left: 40px; z-index: 5;
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .bg-deep .corner-mark { color: rgba(255,255,255,0.6); }
+  .corner-mark .mark-dot {
+    width: 6px; height: 6px; background: var(--blue); border-radius: 50%;
+  }
+  .bg-deep .corner-mark .mark-dot { background: var(--sky-soft); }
 
-h1{font-family:'Syne',sans-serif;font-weight:800;line-height:1.05;}
-h2{font-family:'Syne',sans-serif;font-weight:700;}
-h3{font-family:'Syne',sans-serif;font-weight:700;}
+  .slide-num {
+    position: absolute; top: 28px; right: 40px; z-index: 5;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.15em;
+    color: var(--text-muted);
+  }
+  .bg-deep .slide-num { color: rgba(255,255,255,0.5); }
 
-/* DIVIDERS */
-.div{width:44px;height:3px;border-radius:2px;background:linear-gradient(90deg,var(--blue2),var(--accent));margin:11px 0 18px;}
-.div-w{width:44px;height:3px;border-radius:2px;background:linear-gradient(90deg,var(--accent),rgba(255,255,255,.4));margin:11px 0 18px;}
+  .footer-rule {
+    position: absolute; bottom: 28px; left: 40px; right: 40px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted);
+    padding-top: 14px; border-top: 1px solid var(--line); z-index: 5;
+  }
+  .bg-deep .footer-rule { border-top-color: rgba(255,255,255,0.12); color: rgba(255,255,255,0.55); }
 
-/* FOOTER */
-.fb{height:4px;background:linear-gradient(90deg,var(--blue2) 0%,var(--accent) 50%,transparent 100%);position:absolute;bottom:0;left:0;right:0;flex-shrink:0;}
-.fb-w{height:4px;background:linear-gradient(90deg,rgba(255,255,255,.5) 0%,transparent 100%);position:absolute;bottom:0;left:0;right:0;}
+  /* ─────────────────────────────────────────────
+     TYPOGRAPHY
+  ───────────────────────────────────────────── */
+  .display {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-variation-settings: "SOFT" 30, "WONK" 0, "opsz" 144;
+    letter-spacing: -0.03em;
+    line-height: 1.0;
+  }
+  .display em {
+    font-style: italic;
+    font-variation-settings: "SOFT" 60, "WONK" 1, "opsz" 144;
+    font-weight: 400;
+    color: var(--blue);
+  }
+  .kicker {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--blue); font-weight: 500;
+  }
+  .bg-deep .kicker { color: var(--sky-soft); }
+  .kicker::before {
+    content: ""; width: 24px; height: 1px; background: currentColor;
+  }
 
-/* GLASS CARDS */
-.card{background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.9);border-radius:16px;padding:20px 24px;box-shadow:var(--shadow2);transition:transform .2s,box-shadow .2s;}
-.card:hover{transform:translateY(-2px);box-shadow:var(--shadow);}
-.card-b{background:rgba(255,255,255,.12);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.2);border-radius:16px;padding:20px 24px;transition:transform .2s;}
-.card-b:hover{transform:translateY(-2px);background:rgba(255,255,255,.18);}
+  h1, h2, h3 { font-family: 'Fraunces', serif; font-weight: 400; letter-spacing: -0.02em; }
+  h2.section-title {
+    font-size: clamp(40px, 4.2vw, 56px);
+    line-height: 1.02;
+    margin: 10px 0 8px;
+    color: var(--ink);
+  }
+  .bg-deep h2.section-title { color: var(--white); }
+  h2.section-title em {
+    font-style: italic; color: var(--blue);
+    font-variation-settings: "SOFT" 60, "WONK" 1;
+  }
+  .bg-deep h2.section-title em { color: var(--sky-soft); }
 
-/* GRIDS */
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
-.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;}
-.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
-.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
+  /* Animated underline */
+  .underline {
+    position: relative; display: inline-block; padding-bottom: 6px;
+  }
+  .underline::after {
+    content: ""; position: absolute; left: 0; bottom: 0;
+    width: 0; height: 2px; background: var(--blue);
+    transition: width 1200ms var(--ease-out) 400ms;
+  }
+  .slide.active .underline::after { width: 64px; }
+  .bg-deep .underline::after { background: var(--sky-soft); }
 
-/* TOC */
-.toc-i{display:flex;align-items:center;gap:16px;padding:11px 16px;border-bottom:1px solid var(--border2);transition:background .2s;border-radius:10px;margin-bottom:2px;}
-.toc-i:last-child{border-bottom:none;}
-.toc-i:hover{background:rgba(37,99,235,.05);}
-.toc-n{font-family:'Syne',sans-serif;font-weight:800;font-size:17px;color:var(--blue2);width:30px;flex-shrink:0;}
-.toc-t{font-size:13px;font-weight:500;color:var(--text2);}
+  .lead {
+    font-size: 17px; line-height: 1.65; color: var(--text-soft); max-width: 68ch;
+    font-weight: 400;
+  }
+  .bg-deep .lead { color: rgba(255,255,255,0.8); }
 
-/* SMART */
-.smart-i{padding:16px 18px;background:var(--glass);border-radius:16px;border:1px solid rgba(255,255,255,.9);position:relative;overflow:hidden;box-shadow:var(--shadow2);transition:transform .2s;}
-.smart-i:hover{transform:translateY(-3px);}
-.smart-l-bg{font-family:'Syne',sans-serif;font-weight:800;font-size:38px;color:var(--blue2);opacity:.07;position:absolute;right:10px;bottom:2px;line-height:1;}
-.smart-l{font-family:'Syne',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--blue2);margin-bottom:5px;}
+  /* ─────────────────────────────────────────────
+     LAYOUT
+  ───────────────────────────────────────────── */
+  .slide-inner {
+    position: relative; z-index: 3;
+    padding: 68px 80px 96px;
+    flex: 1;
+    display: flex; flex-direction: column;
+    justify-content: center;
+    max-width: 1400px; width: 100%; margin: 0 auto;
+    overflow: hidden;
+  }
+  .slide-inner.center { justify-content: center; align-items: center; text-align: center; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+  .grid-7 { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; }
 
-/* METRICS */
-.metric{text-align:center;padding:16px 12px;}
-.metric-v{font-family:'Syne',sans-serif;font-weight:800;font-size:32px;color:var(--blue2);margin-bottom:4px;}
-.metric-l{font-size:11px;color:var(--gray);letter-spacing:1px;text-transform:uppercase;}
-.stat-card{text-align:center;padding:18px 12px;background:var(--glass);border:1px solid rgba(255,255,255,.9);border-radius:16px;box-shadow:var(--shadow2);transition:transform .2s;}
-.stat-card:hover{transform:translateY(-3px);}
+  /* ─────────────────────────────────────────────
+     CARDS — GLASSMORPHISM LIGHT
+  ───────────────────────────────────────────── */
+  .card {
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 22px 24px;
+    box-shadow: var(--shadow-sm);
+    transition: transform 400ms var(--ease-out), box-shadow 400ms var(--ease-out), border-color 300ms;
+    position: relative;
+    overflow: hidden;
+  }
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    border-color: rgba(33,85,200,0.18);
+  }
+  .card-glass {
+    background: rgba(255,255,255,0.72);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255,255,255,0.8);
+    border-radius: 16px;
+    padding: 22px 24px;
+    box-shadow: var(--shadow-md);
+  }
+  .card-dark {
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 16px;
+    padding: 22px 24px;
+    transition: transform 400ms var(--ease-out), background 300ms;
+  }
+  .card-dark:hover { transform: translateY(-3px); background: rgba(255,255,255,0.09); }
+  .card-accent-bar {
+    position: relative;
+  }
+  .card-accent-bar::before {
+    content: ""; position: absolute; top: 0; left: 0; width: 3px; height: 100%;
+    background: var(--grad-blue); border-radius: 3px 0 0 3px;
+  }
 
-/* STEP ROW */
-.step-row{display:flex;align-items:flex-start;gap:14px;padding:13px 17px;background:var(--glass);border-radius:12px;border-left:3px solid var(--blue2);border-top:1px solid rgba(255,255,255,.9);border-right:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:9px;transition:transform .2s,box-shadow .2s;box-shadow:var(--shadow2);}
-.step-row:hover{transform:translateX(4px);box-shadow:var(--shadow);}
-.step-n{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;color:var(--blue2);line-height:1;flex-shrink:0;width:32px;}
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--blue); font-weight: 500;
+  }
+  .bg-deep .eyebrow { color: var(--sky-soft); }
+  .card-title {
+    font-size: 15px; font-weight: 600; color: var(--ink); margin-top: 8px;
+    letter-spacing: -0.01em;
+  }
+  .bg-deep .card-title { color: var(--white); }
+  .card-body {
+    font-size: 13px; line-height: 1.6; color: var(--text-soft); margin-top: 8px;
+  }
+  .bg-deep .card-body { color: rgba(255,255,255,0.75); }
 
-/* PILLS */
-.pill{display:inline-block;padding:4px 12px;border-radius:100px;font-size:11px;font-weight:600;letter-spacing:.4px;background:rgba(37,99,235,.1);color:var(--blue2);border:1px solid rgba(37,99,235,.22);margin:3px;}
-.pill:hover{background:rgba(37,99,235,.17);}
-.pill-a{background:rgba(245,158,11,.12);color:#B45309;border:1px solid rgba(245,158,11,.28);}
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border-radius: 100px;
+    background: var(--light-blue);
+    color: var(--blue-deep);
+    font-size: 12px; font-weight: 500;
+    border: 1px solid rgba(33,85,200,0.15);
+  }
+  .bg-deep .pill {
+    background: rgba(255,255,255,0.08);
+    color: var(--sky-soft);
+    border-color: rgba(255,255,255,0.15);
+  }
 
-/* DASHBOARD BUTTONS */
-.db-btn{display:inline-flex;align-items:center;gap:10px;padding:12px 26px;border-radius:100px;background:linear-gradient(135deg,var(--blue2) 0%,var(--blue3) 100%);color:#fff;text-decoration:none;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;letter-spacing:.5px;box-shadow:0 4px 20px rgba(37,99,235,.35);transition:transform .2s,box-shadow .2s,filter .2s;border:none;cursor:pointer;}
-.db-btn:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 8px 32px rgba(37,99,235,.5);filter:brightness(1.06);}
-.db-btn:active{transform:translateY(0) scale(.99);}
+  /* Divider */
+  .divider {
+    width: 48px; height: 2px; background: var(--blue); margin: 10px 0 24px;
+    transform-origin: left; transform: scaleX(0);
+    transition: transform 1000ms var(--ease-out) 300ms;
+  }
+  .slide.active .divider { transform: scaleX(1); }
+  .bg-deep .divider { background: var(--sky-soft); }
 
-/* CHALLENGE / RESPONSE */
-.ch-i{display:flex;gap:12px;align-items:flex-start;padding:13px 16px;border-radius:12px;background:rgba(220,53,69,.06);border:1px solid rgba(220,53,69,.18);margin-bottom:9px;}
-.re-i{display:flex;gap:12px;align-items:flex-start;padding:13px 16px;border-radius:12px;background:rgba(22,163,74,.06);border:1px solid rgba(22,163,74,.18);margin-bottom:9px;}
+  /* ─────────────────────────────────────────────
+     STAGGERED REVEAL ANIMATION
+  ───────────────────────────────────────────── */
+  .stagger > * {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 700ms var(--ease-out), transform 700ms var(--ease-out);
+  }
+  .slide.active .stagger > * {
+    opacity: 1; transform: translateY(0);
+  }
+  .slide.active .stagger > *:nth-child(1)  { transition-delay: 200ms; }
+  .slide.active .stagger > *:nth-child(2)  { transition-delay: 300ms; }
+  .slide.active .stagger > *:nth-child(3)  { transition-delay: 400ms; }
+  .slide.active .stagger > *:nth-child(4)  { transition-delay: 500ms; }
+  .slide.active .stagger > *:nth-child(5)  { transition-delay: 600ms; }
+  .slide.active .stagger > *:nth-child(6)  { transition-delay: 700ms; }
+  .slide.active .stagger > *:nth-child(7)  { transition-delay: 800ms; }
+  .slide.active .stagger > *:nth-child(8)  { transition-delay: 900ms; }
 
-/* TIMELINE */
-.timeline{position:relative;padding-left:28px;}
-.timeline::before{content:'';position:absolute;left:8px;top:8px;bottom:8px;width:2px;background:var(--border);}
-.t-item{position:relative;margin-bottom:18px;}
-.t-dot{position:absolute;left:-23px;top:6px;width:13px;height:13px;border-radius:50%;background:var(--blue2);border:2px solid #EEF2FF;box-shadow:0 0 0 3px rgba(37,99,235,.2);}
-.t-year{font-family:'Syne',sans-serif;font-size:10px;font-weight:700;color:var(--blue2);letter-spacing:1px;margin-bottom:3px;}
+  /* ─────────────────────────────────────────────
+     TOC
+  ───────────────────────────────────────────── */
+  .toc-item {
+    display: grid; grid-template-columns: 60px 1fr auto; align-items: center;
+    padding: 18px 4px; border-bottom: 1px solid var(--line);
+    gap: 20px; transition: padding-left 300ms var(--ease-out);
+    cursor: pointer;
+  }
+  .toc-item:hover { padding-left: 12px; }
+  .toc-item:last-child { border-bottom: none; }
+  .toc-num {
+    font-family: 'Fraunces', serif; font-style: italic;
+    font-size: 22px; color: var(--blue); font-weight: 400;
+  }
+  .toc-title {
+    font-size: 15px; color: var(--ink); font-weight: 500;
+  }
+  .toc-arrow {
+    font-size: 14px; color: var(--sky); opacity: 0;
+    transform: translateX(-8px); transition: all 300ms var(--ease-out);
+  }
+  .toc-item:hover .toc-arrow { opacity: 1; transform: translateX(0); }
 
-/* AUTOMATION BLOCKS */
-.code-b{font-family:'Courier New',Courier,monospace;font-size:11.5px;color:#1E40AF;background:rgba(30,64,175,.07);border:1px solid rgba(30,64,175,.15);border-radius:8px;padding:7px 13px;margin:6px 0;display:inline-block;letter-spacing:.3px;}
-.auto-step{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:15px 18px;background:var(--glass);border-radius:14px;border:1px solid rgba(255,255,255,.9);border-left:4px solid var(--blue2);margin-bottom:11px;box-shadow:var(--shadow2);transition:transform .2s;}
-.auto-step:hover{transform:translateX(4px);}
-.as-title{font-family:'Syne',sans-serif;font-weight:700;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue2);margin-bottom:5px;}
-.as-biz{font-size:12.5px;color:var(--text2);line-height:1.55;}
-.as-num{font-family:'Syne',sans-serif;font-weight:800;font-size:28px;color:rgba(37,99,235,.12);position:absolute;right:12px;top:8px;}
+  /* ─────────────────────────────────────────────
+     PREMIUM BUTTONS (Dashboard Access)
+  ───────────────────────────────────────────── */
+  .btn-dash {
+    display: flex; flex-direction: column; gap: 6px;
+    padding: 22px 26px;
+    background: var(--grad-blue);
+    color: var(--white);
+    border-radius: 18px;
+    text-decoration: none;
+    transition: transform 400ms var(--ease-out), box-shadow 400ms var(--ease-out);
+    box-shadow: var(--shadow-md);
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-dash::before {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 50%);
+    opacity: 0; transition: opacity 400ms var(--ease-out);
+  }
+  .btn-dash::after {
+    content: ""; position: absolute; top: 50%; right: 20px;
+    width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    display: flex; align-items: center; justify-content: center;
+    transform: translateY(-50%); transition: all 400ms var(--ease-out);
+  }
+  .btn-dash:hover {
+    transform: translateY(-4px) scale(1.015);
+    box-shadow: var(--glow-blue);
+  }
+  .btn-dash:hover::before { opacity: 1; }
+  .btn-dash:hover::after { background: rgba(255,255,255,0.3); right: 16px; }
+  .btn-dash .btn-icon {
+    width: 36px; height: 36px;
+    background: rgba(255,255,255,0.18);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .btn-dash .btn-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: rgba(255,255,255,0.7); font-weight: 500; margin-top: 12px;
+  }
+  .btn-dash .btn-title {
+    font-family: 'Fraunces', serif; font-size: 22px; font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .btn-dash .btn-sub {
+    font-size: 12px; color: rgba(255,255,255,0.8); margin-top: 2px;
+  }
 
-/* IMAGE FRAME */
-.img-frame{border-radius:14px;overflow:hidden;box-shadow:0 10px 40px rgba(10,31,92,.16);border:3px solid rgba(255,255,255,.95);transition:transform .3s,box-shadow .3s;background:#fff;}
-.img-frame:hover{transform:scale(1.015);box-shadow:0 18px 56px rgba(10,31,92,.22);}
-.img-frame img{width:100%;height:100%;object-fit:contain;display:block;}
+  /* ─────────────────────────────────────────────
+     NAVIGATION (floating bottom bar + side dots)
+  ───────────────────────────────────────────── */
+  .nav {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    z-index: 999;
+    display: flex; align-items: center; gap: 16px;
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.86);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--line);
+    border-radius: 100px;
+    box-shadow: var(--shadow-md);
+  }
+  .nav-btn {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: var(--paper-2); border: 1px solid var(--line);
+    color: var(--ink); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 500;
+    transition: all 250ms var(--ease-out);
+  }
+  .nav-btn:hover { background: var(--blue); color: var(--white); border-color: var(--blue); }
+  .nav-counter {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.12em;
+    color: var(--ink); min-width: 72px; text-align: center; font-weight: 500;
+  }
+  .nav-counter .cur { color: var(--blue); font-weight: 600; }
 
-/* EXEC BULLETS */
-.exec-bullets{display:flex;flex-direction:column;gap:13px;margin-top:6px;}
-.exec-bullet{display:flex;gap:13px;align-items:flex-start;padding:15px 18px;background:var(--glass);border-radius:14px;border:1px solid rgba(255,255,255,.9);border-left:4px solid var(--blue2);box-shadow:var(--shadow2);transition:transform .2s,box-shadow .2s;}
-.exec-bullet:hover{transform:translateX(5px);box-shadow:var(--shadow);}
-.eb-icon{width:36px;height:36px;border-radius:10px;background:rgba(37,99,235,.1);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
-.eb-text{font-size:13px;color:var(--text2);line-height:1.55;}
-.eb-text strong{font-size:13.5px;color:var(--text);display:block;margin-bottom:2px;}
+  .side-dots {
+    position: fixed; right: 28px; top: 50%; transform: translateY(-50%);
+    z-index: 999; display: flex; flex-direction: column; gap: 10px;
+  }
+  .side-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: rgba(10,31,79,0.18); cursor: pointer;
+    transition: all 300ms var(--ease-out);
+    position: relative;
+  }
+  .side-dot:hover { background: var(--blue); transform: scale(1.3); }
+  .side-dot.active {
+    background: var(--blue); width: 8px; height: 24px; border-radius: 6px;
+  }
+  .bg-deep ~ .side-dots .side-dot { background: rgba(255,255,255,0.25); }
+  .side-dot-label {
+    position: absolute; right: 18px; top: 50%; transform: translateY(-50%);
+    padding: 4px 10px;
+    background: var(--ink); color: var(--white);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    border-radius: 6px; white-space: nowrap;
+    opacity: 0; pointer-events: none; transition: opacity 200ms;
+  }
+  .side-dot:hover .side-dot-label { opacity: 1; }
 
-/* IMAGE LABEL */
-.img-lbl{font-family:'Syne',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--blue2);text-align:center;padding:7px 0 3px;}
+  .progress {
+    position: fixed; top: 0; left: 0; height: 2px; z-index: 9999;
+    background: var(--grad-blue); width: 0; transition: width 600ms var(--ease-out);
+  }
 
-/* KEY HINT */
-.key-hint{position:fixed;top:16px;right:20px;font-size:11px;color:var(--text2);z-index:999;background:rgba(255,255,255,.88);padding:5px 14px;border-radius:100px;backdrop-filter:blur(8px);border:1px solid var(--border);box-shadow:var(--shadow2);}
+  /* ─────────────────────────────────────────────
+     SLIDE 1 — COVER
+  ───────────────────────────────────────────── */
+  .cover-logo {
+    width: 280px; height: auto;
+    display: block;
+    margin-bottom: 32px;
+    filter: drop-shadow(0 14px 40px rgba(10,31,79,0.16)) drop-shadow(0 4px 10px rgba(10,31,79,0.08));
+    transition: transform 800ms var(--ease-out);
+  }
+  .slide.active .cover-logo { animation: logoFloat 6s ease-in-out infinite; }
+  .cover-logo img { width: 100%; height: auto; display: block; }
+  @keyframes logoFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+  .hero-title {
+    font-family: 'Fraunces', serif; font-weight: 300;
+    font-size: clamp(56px, 7vw, 96px); line-height: 0.98;
+    letter-spacing: -0.035em; color: var(--ink);
+    max-width: 14ch;
+  }
+  .hero-title em {
+    font-style: italic; color: var(--blue);
+    font-variation-settings: "SOFT" 60, "WONK" 1;
+  }
+  .hero-sub {
+    font-size: 20px; line-height: 1.5;
+    color: var(--text-soft); max-width: 44ch; margin-top: 28px;
+    font-weight: 400;
+  }
+  .hero-meta {
+    display: flex; gap: 30px; margin-top: 52px; flex-wrap: wrap;
+  }
+  .hero-meta-item .eyebrow { display: block; margin-bottom: 4px; }
+  .hero-meta-item strong {
+    font-family: 'Fraunces', serif; font-size: 18px;
+    color: var(--ink); font-weight: 500;
+  }
 
-/* MINI CARDS ON COVER */
-.mini-card{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);border-radius:14px;padding:14px 18px;backdrop-filter:blur(12px);min-width:240px;}
-.mc-title{font-size:10px;color:rgba(255,255,255,.65);letter-spacing:1px;text-transform:uppercase;margin-bottom:9px;}
-.chart-preview{position:absolute;right:66px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:18px;}
-.chart-bar-wrap{display:flex;align-items:flex-end;gap:7px;height:76px;}
-.bar-seg{border-radius:5px 5px 0 0;flex:1;transition:height .4s;}
-.line-chart{position:relative;height:56px;}
-.line-chart svg{width:100%;height:100%;overflow:visible;}
+  /* ─────────────────────────────────────────────
+     SECTION 9 — PTA/PX (light)
+     SECTION 10 — EXIM (lighter)
+     SECTION 11 — DAILY PRICING (SCROLLABLE)
+  ───────────────────────────────────────────── */
+  .dash-hero {
+    display: grid; grid-template-columns: 1.15fr 1fr;
+    gap: 48px; align-items: center;
+  }
+  .dash-image-wrap {
+    position: relative;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    background: var(--white);
+    border: 1px solid var(--line);
+    transition: transform 600ms var(--ease-out), box-shadow 600ms var(--ease-out);
+    max-height: min(56vh, 520px);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .dash-image-wrap:hover {
+    transform: translateY(-6px) scale(1.01);
+    box-shadow: var(--shadow-xl);
+  }
+  .dash-image-wrap::before {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(10,31,79,0.04) 100%);
+    pointer-events: none; z-index: 2;
+  }
+  .dash-image-wrap img {
+    width: 100%; height: auto; display: block;
+    max-height: min(56vh, 520px);
+    object-fit: contain;
+    transition: transform 800ms var(--ease-out);
+  }
+  .dash-image-wrap:hover img { transform: scale(1.03); }
+  .dash-image-badge {
+    position: absolute; top: 16px; left: 16px; z-index: 3;
+    padding: 6px 12px;
+    background: rgba(255,255,255,0.94);
+    backdrop-filter: blur(8px);
+    border-radius: 100px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--blue); font-weight: 500;
+    box-shadow: var(--shadow-sm);
+  }
 
-/* FEATURE ITEMS */
-.feature-item{padding:16px 15px;background:var(--glass);border:1px solid rgba(255,255,255,.9);border-radius:14px;box-shadow:var(--shadow2);transition:transform .2s;}
-.feature-item:hover{transform:translateY(-3px);}
+  .bullet-premium {
+    display: flex; gap: 16px; padding: 18px 0;
+    border-bottom: 1px solid var(--line);
+    transition: padding-left 400ms var(--ease-out);
+  }
+  .bullet-premium:last-child { border-bottom: none; }
+  .bullet-premium:hover { padding-left: 10px; }
+  .bullet-premium .bp-num {
+    font-family: 'Fraunces', serif; font-style: italic;
+    font-size: 28px; color: var(--blue); font-weight: 400;
+    line-height: 1; flex-shrink: 0; min-width: 40px;
+  }
+  .bullet-premium .bp-text {
+    font-size: 16px; line-height: 1.55; color: var(--ink-soft); font-weight: 400;
+    padding-top: 4px;
+  }
 
-/* HIGHLIGHT MESSAGE */
-.final-msg{background:linear-gradient(135deg,rgba(37,99,235,.13),rgba(37,99,235,.06));border:2px solid rgba(37,99,235,.28);border-radius:16px;padding:16px 22px;display:flex;align-items:center;gap:15px;margin-top:14px;}
-.fm-icon{font-size:26px;flex-shrink:0;}
-.fm-text{font-size:13.5px;font-weight:600;color:var(--blue2);line-height:1.45;}
+  /* Inline "Open Dashboard" button (on dashboard slides) */
+  .open-dash-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 11px 18px 11px 20px;
+    background: var(--grad-blue);
+    color: var(--white);
+    border-radius: 100px;
+    text-decoration: none;
+    font-size: 13px; font-weight: 500;
+    letter-spacing: 0.02em;
+    box-shadow: 0 6px 20px rgba(33,85,200,0.25);
+    transition: all 350ms var(--ease-out);
+    position: relative;
+  }
+  .open-dash-btn .odb-arrow {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: rgba(255,255,255,0.22);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; transition: all 350ms var(--ease-out);
+  }
+  .open-dash-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(33,85,200,0.4);
+  }
+  .open-dash-btn:hover .odb-arrow {
+    background: rgba(255,255,255,0.35);
+    transform: translateX(3px);
+  }
 
-/* DECO */
-.deco{position:absolute;border-radius:50%;pointer-events:none;}
+  /* ─────────────────────────────────────────────
+     SCROLLABLE SECTION (Daily Pricing)
+  ───────────────────────────────────────────── */
+  .scroll-slide .slide-inner {
+    padding: 0;
+    max-width: none;
+    height: 100%;
+    overflow: hidden;
+  }
+  .scroll-container {
+    height: 100%;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: var(--blue) transparent;
+    position: relative;
+  }
+  .scroll-container::-webkit-scrollbar { width: 8px; }
+  .scroll-container::-webkit-scrollbar-track { background: var(--paper); }
+  .scroll-container::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--blue), var(--sky));
+    border-radius: 8px;
+  }
+  .scroll-sticky-head {
+    position: sticky; top: 0; z-index: 10;
+    padding: 28px 80px 22px;
+    background: rgba(247,249,253,0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--line);
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .scroll-sticky-head .kicker { font-size: 10px; }
+  .scroll-sticky-head h2 {
+    font-family: 'Fraunces', serif; font-size: 32px; line-height: 1.05;
+    color: var(--ink); font-weight: 400; letter-spacing: -0.02em;
+  }
+  .scroll-sticky-head h2 em {
+    font-style: italic; color: var(--blue);
+    font-variation-settings: "SOFT" 60, "WONK" 1;
+  }
+  .scroll-content {
+    padding: 48px 80px 100px;
+    max-width: 1400px; margin: 0 auto;
+    display: flex; flex-direction: column; gap: 54px;
+  }
 
-/* ANIMATIONS */
-@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
-@keyframes logoIn{from{opacity:0;transform:translateY(-10px);}to{opacity:1;transform:translateY(0);}}
-@keyframes drift{0%{transform:translate(0,0) scale(1);}100%{transform:translate(25px,-18px) scale(1.04);}}
-.slide.active .slide-inner > *,.slide.active .si-scroll > *{animation:fadeUp .48s ease forwards;opacity:0;}
-.slide.active .slide-inner > *:nth-child(1),.slide.active .si-scroll > *:nth-child(1){animation-delay:.04s;}
-.slide.active .slide-inner > *:nth-child(2),.slide.active .si-scroll > *:nth-child(2){animation-delay:.09s;}
-.slide.active .slide-inner > *:nth-child(3),.slide.active .si-scroll > *:nth-child(3){animation-delay:.14s;}
-.slide.active .slide-inner > *:nth-child(4),.slide.active .si-scroll > *:nth-child(4){animation-delay:.19s;}
-.slide.active .slide-inner > *:nth-child(5),.slide.active .si-scroll > *:nth-child(5){animation-delay:.24s;}
-.slide.active .slide-inner > *:nth-child(6),.slide.active .si-scroll > *:nth-child(6){animation-delay:.29s;}
+  /* Scroll section blocks */
+  .sc-block {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 32px; align-items: center;
+  }
+  .sc-block.reverse { grid-template-columns: 1fr 1fr; }
+  .sc-block.reverse .sc-copy { order: 2; }
+  .sc-block.reverse .sc-image { order: 1; }
 
-.anim-ul{display:inline-block;position:relative;}
-.anim-ul::after{content:'';position:absolute;bottom:-3px;left:0;width:0;height:3px;background:linear-gradient(90deg,var(--blue2),var(--accent));border-radius:2px;transition:width .6s ease .3s;}
-.slide.active .anim-ul::after{width:100%;}
-.anim-ul-w::after{background:linear-gradient(90deg,var(--accent),rgba(255,255,255,.5));}
+  .automation-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
+  }
+  .auto-card {
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: 14px; padding: 22px 24px;
+    box-shadow: var(--shadow-sm);
+    position: relative; overflow: hidden;
+    transition: all 400ms var(--ease-out);
+  }
+  .auto-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+    border-color: rgba(33,85,200,0.2);
+  }
+  .auto-card::before {
+    content: ""; position: absolute; top: 0; left: 0; width: 0; height: 3px;
+    background: var(--grad-blue); transition: width 400ms var(--ease-out);
+  }
+  .auto-card:hover::before { width: 100%; }
+  .auto-num {
+    display: inline-flex; width: 32px; height: 32px;
+    align-items: center; justify-content: center;
+    background: var(--light-blue); color: var(--blue);
+    border-radius: 10px;
+    font-family: 'Fraunces', serif; font-style: italic;
+    font-weight: 500; font-size: 16px;
+  }
+  .auto-title {
+    font-family: 'Fraunces', serif; font-weight: 500;
+    font-size: 18px; color: var(--ink);
+    margin-top: 12px; letter-spacing: -0.01em;
+  }
+  .auto-code {
+    display: block;
+    background: var(--paper-2);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--blue);
+    border-radius: 8px;
+    padding: 10px 14px; margin-top: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; color: var(--navy);
+    overflow-x: auto;
+  }
+  .auto-meaning {
+    margin-top: 10px; font-size: 13px; line-height: 1.6;
+    color: var(--text-soft);
+  }
+  .auto-meaning strong { color: var(--blue-deep); font-weight: 600; }
+
+  .final-message {
+    margin-top: 40px;
+    padding: 42px 44px;
+    background: var(--grad-deep);
+    border-radius: 20px;
+    color: var(--white);
+    display: flex; align-items: center; gap: 32px;
+    box-shadow: var(--shadow-xl);
+    position: relative; overflow: hidden;
+  }
+  .final-message::before {
+    content: ""; position: absolute; top: -60%; right: -20%;
+    width: 500px; height: 500px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+  }
+  .final-message-icon {
+    flex-shrink: 0; width: 70px; height: 70px;
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 20px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px; z-index: 2;
+  }
+  .final-message-text {
+    font-family: 'Fraunces', serif; font-weight: 300;
+    font-size: 30px; line-height: 1.2; letter-spacing: -0.02em;
+    z-index: 2;
+  }
+  .final-message-text em {
+    font-style: italic; color: var(--sky-soft);
+    font-variation-settings: "SOFT" 60, "WONK" 1;
+    font-weight: 400;
+  }
+
+  /* ─────────────────────────────────────────────
+     SMART BOXES
+  ───────────────────────────────────────────── */
+  .smart-item {
+    position: relative;
+    padding: 22px 18px 22px;
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 400ms var(--ease-out);
+  }
+  .smart-item:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+  }
+  .smart-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--blue); font-weight: 500;
+  }
+  .smart-letter {
+    position: absolute; right: 12px; top: 8px;
+    font-family: 'Fraunces', serif; font-weight: 300; font-style: italic;
+    font-size: 70px; color: rgba(33,85,200,0.08); line-height: 1;
+  }
+
+  /* ─────────────────────────────────────────────
+     STAT CARDS (background slide)
+  ───────────────────────────────────────────── */
+  .stat-card {
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 14px; padding: 22px 20px;
+    transition: all 400ms var(--ease-out);
+  }
+  .stat-card:hover {
+    background: rgba(255,255,255,0.10);
+    transform: translateY(-3px);
+  }
+  .stat-card.light {
+    background: var(--white); border-color: var(--line);
+    box-shadow: var(--shadow-sm);
+  }
+  .metric-val {
+    font-family: 'Fraunces', serif; font-weight: 400;
+    font-size: 30px; color: var(--white); letter-spacing: -0.02em;
+  }
+  .metric-val em { font-style: italic; color: var(--sky-soft); }
+  .bg-paper .metric-val, .bg-blue .metric-val { color: var(--ink); }
+  .bg-paper .metric-val em, .bg-blue .metric-val em { color: var(--blue); }
+  .metric-lbl {
+    font-size: 13px; color: rgba(255,255,255,0.75); margin-top: 4px; font-weight: 500;
+  }
+  .bg-paper .metric-lbl, .bg-blue .metric-lbl { color: var(--text-soft); }
+
+  /* ─────────────────────────────────────────────
+     TIMELINE
+  ───────────────────────────────────────────── */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before {
+    content: ""; position: absolute; left: 6px; top: 6px; bottom: 6px;
+    width: 2px; background: linear-gradient(180deg, var(--blue), var(--sky-soft));
+  }
+  .t-item { position: relative; margin-bottom: 22px; }
+  .t-dot {
+    position: absolute; left: -28px; top: 2px;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--white); border: 3px solid var(--blue);
+    box-shadow: 0 0 0 4px rgba(33,85,200,0.15);
+  }
+  .bg-deep .t-dot { background: var(--navy); border-color: var(--sky-soft); }
+  .t-year {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--blue); margin-bottom: 6px; font-weight: 500;
+  }
+  .bg-deep .t-year { color: var(--sky-soft); }
+
+  /* ─────────────────────────────────────────────
+     FLOW STEPS
+  ───────────────────────────────────────────── */
+  .flow-step {
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center; gap: 12px; position: relative;
+  }
+  .flow-step-num {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--grad-blue); color: var(--white);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Fraunces', serif; font-weight: 500; font-size: 18px;
+    box-shadow: 0 8px 20px rgba(33,85,200,0.25);
+    border: 3px solid var(--white);
+  }
+  .bg-deep .flow-step-num { border-color: var(--navy); }
+  .flow-step-card {
+    background: var(--white); border: 1px solid var(--line);
+    border-radius: 12px; padding: 12px 10px;
+    width: 100%; box-shadow: var(--shadow-sm);
+    transition: all 300ms var(--ease-out);
+  }
+  .bg-deep .flow-step-card {
+    background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+  }
+  .flow-step-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+  .flow-step-connector {
+    position: absolute; top: 22px; left: 70%; width: 60%; height: 2px;
+    background: linear-gradient(90deg, var(--blue), transparent);
+    z-index: -1;
+  }
+
+  /* ─────────────────────────────────────────────
+     THANK YOU / CLOSING
+  ───────────────────────────────────────────── */
+  .closing-hero {
+    font-family: 'Fraunces', serif; font-weight: 300;
+    font-size: clamp(60px, 9vw, 120px); line-height: 0.95;
+    letter-spacing: -0.04em; color: var(--ink);
+  }
+  .closing-hero em { font-style: italic; color: var(--blue); }
+
+  /* Utility */
+  .mt-sm { margin-top: 12px; } .mt-md { margin-top: 20px; } .mt-lg { margin-top: 32px; } .mt-xl { margin-top: 48px; }
+  .mb-sm { margin-bottom: 12px; } .mb-md { margin-bottom: 20px; } .mb-lg { margin-bottom: 32px; }
+  .flex { display: flex; } .flex-col { flex-direction: column; }
+  .gap-sm { gap: 10px; } .gap-md { gap: 16px; } .gap-lg { gap: 24px; }
+  .center { align-items: center; justify-content: center; text-align: center; }
+  .items-center { align-items: center; }
+  .w-full { width: 100%; }
+
+  /* ─────────────────────────────────────────────
+     RESPONSIVE
+  ───────────────────────────────────────────── */
+  @media (max-width: 1100px) {
+    .slide-inner { padding: 60px 40px; }
+    .grid-2, .dash-hero, .sc-block, .automation-grid { grid-template-columns: 1fr; gap: 24px; }
+    .grid-7 { grid-template-columns: repeat(4, 1fr); }
+    .scroll-sticky-head, .scroll-content { padding-left: 40px; padding-right: 40px; }
+  }
 </style>
 </head>
 <body>
 
+<!-- Progress bar -->
 <div class="progress" id="progress"></div>
-<div class="key-hint">← → Arrow Keys to Navigate</div>
 
 <div class="deck" id="deck">
 
-<!-- ═══════════════════════════════════════
+<!-- ═══════════════════════════════════════════════════════
      SLIDE 1 — COVER
-════════════════════════════════════════ -->
-<div class="slide s-cover active" id="s1">
-  <div class="grid-w"></div>
-  <div class="deco" style="width:520px;height:520px;right:-100px;top:-180px;background:radial-gradient(circle,rgba(37,99,235,.35) 0%,transparent 70%);filter:blur(50px);animation:drift 18s ease-in-out infinite alternate;"></div>
-  <div class="deco" style="width:300px;height:300px;left:-60px;bottom:-80px;background:radial-gradient(circle,rgba(245,158,11,.22) 0%,transparent 70%);filter:blur(35px);animation:drift 24s ease-in-out infinite alternate-reverse;"></div>
+═══════════════════════════════════════════════════════ -->
+<section class="slide bg-paper active" id="s1" data-label="Cover">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="grid-lines"></div>
+  <div class="grain"></div>
 
-  <div class="slide-inner" style="justify-content:center;max-width:58%;">
-    <div style="animation:logoIn .7s ease forwards;margin-bottom:22px;">
-      <img src="https://raw.githubusercontent.com/azhar211102/azhar211102github.io/ebed4fe5dbbbad1f965d0e519b13fc7b1ed0f2ae/img/mcci-removebg-preview.png"
-           alt="MCCI Logo" style="height:52px;filter:brightness(0) invert(1);opacity:.92;"
-           onerror="this.style.display='none'">
-    </div>
-    <div class="kk-w">2026 · Internship Final Project</div>
-    <h1 style="font-size:clamp(42px,6.2vw,80px);line-height:1.0;color:#fff;text-shadow:0 4px 40px rgba(0,0,0,.25);">
-      Power BI<br><span style="color:var(--accent);" class="anim-ul anim-ul-w">Dashboard</span><br>Transformation
-    </h1>
-    <p style="font-size:16px;color:rgba(255,255,255,.72);margin-top:14px;line-height:1.5;font-style:italic;">
-      From Manual Excel to Automated Intelligence
-    </p>
-    <p style="font-size:14px;color:rgba(255,255,255,.58);margin-top:14px;">
-      Presented by <strong style="color:var(--accent);font-style:normal;">Azhar Amirul Abid</strong>
-      &nbsp;·&nbsp; <span style="font-size:12px;">Data Process / Business Intelligence Analyst</span>
-    </p>
-    <div style="display:flex;gap:9px;margin-top:26px;flex-wrap:wrap;">
-      <div class="pill" style="background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.22);">Power BI</div>
-      <div class="pill" style="background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.22);">Power Query</div>
-      <div class="pill" style="background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.22);">DAX</div>
-      <div class="pill" style="background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.22);">Data Automation</div>
-      <div class="pill" style="background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.22);">Business Intelligence</div>
-    </div>
-  </div>
+  <div class="corner-mark"><span class="mark-dot"></span>MCCI · Power BI Initiative</div>
+  <div class="slide-num">01 / 16</div>
 
-  <div class="chart-preview">
-    <div class="mini-card">
-      <div class="mc-title">Value USD — Trend 2021–2025</div>
-      <div class="line-chart">
-        <svg viewBox="0 0 240 60" preserveAspectRatio="none">
-          <defs>
-            <linearGradient id="lg1" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#F59E0B" stop-opacity=".4"/>
-              <stop offset="100%" stop-color="#F59E0B" stop-opacity="0"/>
-            </linearGradient>
-          </defs>
-          <path d="M0 50 C40 48,60 38,90 30 C120 22,150 15,180 8 C200 4,220 3,240 2" fill="none" stroke="#F59E0B" stroke-width="2.5" stroke-linecap="round"/>
-          <path d="M0 50 C40 48,60 38,90 30 C120 22,150 15,180 8 C200 4,220 3,240 2 L240 60 L0 60 Z" fill="url(#lg1)"/>
-        </svg>
+  <div class="slide-inner" style="justify-content: center;">
+    <div class="stagger" style="max-width: 900px;">
+      <div class="cover-logo">
+        <img src="https://raw.githubusercontent.com/azhar211102/azhar211102github.io/ebed4fe5dbbbad1f965d0e519b13fc7b1ed0f2ae/img/mcci-removebg-preview.png" alt="MCCI Logo">
       </div>
-    </div>
-    <div class="mini-card">
-      <div class="mc-title">Monthly Volume — PTA / PX</div>
-      <div class="chart-bar-wrap">
-        <div class="bar-seg" style="height:55%;background:rgba(255,255,255,.28);"></div>
-        <div class="bar-seg" style="height:75%;background:rgba(245,158,11,.7);"></div>
-        <div class="bar-seg" style="height:65%;background:rgba(255,255,255,.28);"></div>
-        <div class="bar-seg" style="height:90%;background:rgba(245,158,11,.82);"></div>
-        <div class="bar-seg" style="height:80%;background:rgba(255,255,255,.28);"></div>
-        <div class="bar-seg" style="height:55%;background:rgba(245,158,11,.6);"></div>
-        <div class="bar-seg" style="height:70%;background:rgba(255,255,255,.28);"></div>
-        <div class="bar-seg" style="height:85%;background:rgba(245,158,11,.75);"></div>
+      <div class="kicker" style="margin-bottom: 16px;">2026 · Dashboard Transformation</div>
+      <h1 class="hero-title">
+        Power BI Dashboard <em>Transformation</em>.
+      </h1>
+      <p class="hero-sub">
+        From manual Excel to automated intelligence — a three-dashboard portfolio for petrochemical operations, trade, and pricing.
+      </p>
+      <div class="hero-meta">
+        <div class="hero-meta-item">
+          <span class="eyebrow">Presented by</span>
+          <strong>Azhar Amirul Abid</strong>
+        </div>
+        <div class="hero-meta-item">
+          <span class="eyebrow">Role</span>
+          <strong>Data Process & BI Analyst</strong>
+        </div>
+        <div class="hero-meta-item">
+          <span class="eyebrow">Dashboards</span>
+          <strong>PTA/PX · EXIM · Pricing</strong>
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="fb-w"></div>
-</div>
+  <div class="footer-rule">
+    <span>Executive Presentation</span>
+    <span>Internship Final Project · 2026</span>
+  </div>
+</section>
 
-<!-- ═══════════════════════════════════════
+<!-- ═══════════════════════════════════════════════════════
      SLIDE 2 — TABLE OF CONTENTS
-════════════════════════════════════════ -->
-<div class="slide s-light" id="s2">
-  <div class="grid-l"></div>
-  <div class="slide-inner">
-    <div class="kk">Overview</div>
-    <h2 style="font-size:34px;color:var(--navy);">Table of <span class="anim-ul" style="color:var(--blue2);">Content</span></h2>
-    <div class="div"></div>
+═══════════════════════════════════════════════════════ -->
+<section class="slide bg-paper" id="s2" data-label="Contents">
+  <div class="blob blob-1" style="opacity: 0.2;"></div>
+  <div class="grid-lines"></div>
 
-    <div class="g2" style="gap:0;margin-top:4px;">
-      <div style="padding-right:20px;">
-        <div class="toc-i"><span class="toc-n">01</span><span class="toc-t">About Power BI</span></div>
-        <div class="toc-i"><span class="toc-n">02</span><span class="toc-t">About Marketing — Vision &amp; Mission</span></div>
-        <div class="toc-i"><span class="toc-n">03</span><span class="toc-t">My Tasks — Data Analyst Role</span></div>
-        <div class="toc-i"><span class="toc-n">04</span><span class="toc-t">Background — Why Power BI?</span></div>
-        <div class="toc-i"><span class="toc-n">05</span><span class="toc-t">SMART Process in Dashboard Development</span></div>
-        <div class="toc-i" style="border-bottom:none;"><span class="toc-n">06</span><span class="toc-t">Dashboard Development Flow</span></div>
-      </div>
-      <div style="border-left:1px solid var(--border2);padding-left:20px;">
-        <div class="toc-i"><span class="toc-n">07</span><span class="toc-t">Dashboard: Executive Overall (PTA/PX)</span></div>
-        <div class="toc-i"><span class="toc-n">08</span><span class="toc-t">Dashboard: EXIM — Export &amp; Import</span></div>
-        <div class="toc-i"><span class="toc-n">09</span><span class="toc-t">Dashboard: Daily Pricing Monitor</span></div>
-        <div class="toc-i"><span class="toc-n">10</span><span class="toc-t">Challenge &amp; Response</span></div>
-        <div class="toc-i"><span class="toc-n">11</span><span class="toc-t">Target &amp; Plan</span></div>
-        <div class="toc-i" style="border-bottom:none;"><span class="toc-n">12</span><span class="toc-t">Recommendation</span></div>
+  <div class="corner-mark"><span class="mark-dot"></span>Overview</div>
+  <div class="slide-num">02 / 16</div>
+
+  <div class="slide-inner">
+    <div class="stagger">
+      <div class="kicker">Navigation</div>
+      <h2 class="section-title">Table of <em class="underline">Contents</em></h2>
+      <div class="divider"></div>
+
+      <div class="grid-2" style="gap: 60px; margin-top: 24px;">
+        <div>
+          <div class="toc-item"><span class="toc-num">01</span><span class="toc-title">About Power BI</span><span class="toc-arrow">→</span></div>
+          <div class="toc-item"><span class="toc-num">02</span><span class="toc-title">Vision & Mission</span><span class="toc-arrow">→</span></div>
+          <div class="toc-item"><span class="toc-num">03</span><span class="toc-title">Role — Data & BI Analyst</span><span class="toc-arrow">→</span></div>
+          <div class="toc-item"><span class="toc-num">04</span><span class="toc-title">Background — Why Power BI?</span><span class="toc-arrow">→</span></div>
+          <div class="toc-item"><span class="toc-num">05</span><span class="toc-title">SMART Framework</span><span class="toc-arrow">→</span></div>
+          <div class="toc-item"><span class="toc-num">06</span><span class="toc-title">Development Flow</span><span class="toc-arrow">→</span></div>
+          <div class="toc-item"><span class="toc-num">07</span><span class="toc-title">PTA/PX Database</span><span class="toc-arrow">→</span></div>
+        </div>
+        <div>
+          <div class="toc-item"><span class="toc-num">08</span><span class="toc-title">EXIM Overview</span><span class="toc-arrow">→</span></div>
+          <div class="toc-item"><span class="toc-num">09</span><span class="toc-title">Daily Pricing — Automation</span><span class="toc-arrow">→</span></div>
+          <div class="toc-item"><span class="toc-num">10</span><span class="toc-title">What We Delivered</span><span class="toc-arrow">→</span></div>
+          <div class="toc-item"><span class="toc-num">11</span><span class="toc-title">Challenge & Response</span><span class="toc-arrow">→</span></div>
+          <div class="toc-item"><span class="toc-num">12</span><span class="toc-title">Target & Plan</span><span class="toc-arrow">→</span></div>
+          <div class="toc-item"><span class="toc-num">13</span><span class="toc-title">Recommendations</span><span class="toc-arrow">→</span></div>
+          <div class="toc-item"><span class="toc-num">14</span><span class="toc-title">Dashboard Access</span><span class="toc-arrow">→</span></div>
+        </div>
       </div>
     </div>
   </div>
-  <div class="fb"></div>
-</div>
 
-<!-- ═══════════════════════════════════════
+  <div class="footer-rule">
+    <span>02 · Contents</span>
+    <span>Power BI Dashboard Transformation</span>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
      SLIDE 3 — ABOUT POWER BI
-════════════════════════════════════════ -->
-<div class="slide s-light" id="s3">
-  <div class="grid-l"></div>
-  <div class="slide-inner">
-    <div class="kk">Section 01</div>
-    <div style="display:flex;align-items:center;gap:18px;margin-bottom:5px;">
-      <div style="font-size:48px;line-height:1;">📊</div>
-      <h2 style="font-size:36px;color:var(--navy);">About <span class="anim-ul" style="color:var(--blue2);">Power BI</span></h2>
-    </div>
-    <div class="div"></div>
+═══════════════════════════════════════════════════════ -->
+<section class="slide bg-blue" id="s3" data-label="About BI">
+  <div class="blob blob-1"></div>
+  <div class="grid-lines"></div>
 
-    <div class="g2" style="gap:26px;">
-      <div>
-        <h3 style="font-size:13px;color:var(--blue2);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:9px;">Definition</h3>
-        <p style="font-size:13.5px;line-height:1.7;color:var(--text2);">Power BI is Microsoft's Business Intelligence platform used to collect, process, analyze, and visualize data from multiple sources into interactive reports and dashboards — enabling faster, data-driven decision-making across all business functions.</p>
-        <div style="margin-top:18px;">
-          <h3 style="font-size:13px;color:var(--blue2);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:11px;">Core Components</h3>
-          <div style="display:flex;flex-direction:column;gap:8px;">
-            <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--glass);border-radius:10px;box-shadow:var(--shadow2);border:1px solid rgba(255,255,255,.9);">
-              <span style="font-size:18px;">🔗</span>
-              <div><strong style="font-size:13px;color:var(--navy);">Power Query</strong><br><span style="font-size:11.5px;color:var(--gray);">Data extraction, transformation &amp; loading (ETL)</span></div>
-            </div>
-            <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--glass);border-radius:10px;box-shadow:var(--shadow2);border:1px solid rgba(255,255,255,.9);">
-              <span style="font-size:18px;">🧮</span>
-              <div><strong style="font-size:13px;color:var(--navy);">DAX (Data Analysis Expressions)</strong><br><span style="font-size:11.5px;color:var(--gray);">Custom calculations, KPIs, and measures</span></div>
-            </div>
-            <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--glass);border-radius:10px;box-shadow:var(--shadow2);border:1px solid rgba(255,255,255,.9);">
-              <span style="font-size:18px;">📈</span>
-              <div><strong style="font-size:13px;color:var(--navy);">Power BI Service</strong><br><span style="font-size:11.5px;color:var(--gray);">Cloud publishing, sharing &amp; automated refresh</span></div>
+  <div class="corner-mark"><span class="mark-dot"></span>Section 01</div>
+  <div class="slide-num">03 / 16</div>
+
+  <div class="slide-inner">
+    <div class="stagger">
+      <div class="kicker">Foundation</div>
+      <h2 class="section-title">About <em class="underline">Power BI</em></h2>
+      <div class="divider"></div>
+
+      <div class="grid-2" style="gap: 40px; margin-top: 14px;">
+        <div class="flex flex-col gap-md">
+          <div>
+            <div class="eyebrow">Definition</div>
+            <p class="lead" style="margin-top: 8px; font-size: 15px;">
+              Microsoft's BI platform for collecting, transforming, and visualizing data into interactive dashboards — enabling faster, evidence-based decisions.
+            </p>
+          </div>
+          <div>
+            <div class="eyebrow">Core Components</div>
+            <div class="flex flex-col gap-sm" style="margin-top: 10px;">
+              <div class="card card-accent-bar" style="padding: 12px 18px;">
+                <strong style="font-size: 14px; color: var(--ink);">Power Query</strong>
+                <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Data extraction & transformation</div>
+              </div>
+              <div class="card card-accent-bar" style="padding: 12px 18px;">
+                <strong style="font-size: 14px; color: var(--ink);">DAX</strong>
+                <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Calculations, KPIs & measures</div>
+              </div>
+              <div class="card card-accent-bar" style="padding: 12px 18px;">
+                <strong style="font-size: 14px; color: var(--ink);">Power BI Service</strong>
+                <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Cloud publishing & auto-refresh</div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div>
-        <h3 style="font-size:13px;color:var(--blue2);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:11px;">Objectives in This Project</h3>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px;">
-          <div class="feature-item">
-            <div style="font-size:24px;margin-bottom:7px;">🎯</div>
-            <strong style="font-size:12.5px;color:var(--navy);">Centralize Data</strong>
-            <p style="font-size:11px;color:var(--gray);margin-top:4px;line-height:1.5;">Consolidate scattered Excel files into one unified data model</p>
-          </div>
-          <div class="feature-item">
-            <div style="font-size:24px;margin-bottom:7px;">⚡</div>
-            <strong style="font-size:12.5px;color:var(--navy);">Speed Up Reporting</strong>
-            <p style="font-size:11px;color:var(--gray);margin-top:4px;line-height:1.5;">Reduce manual report creation from hours to seconds</p>
-          </div>
-          <div class="feature-item">
-            <div style="font-size:24px;margin-bottom:7px;">🔄</div>
-            <strong style="font-size:12.5px;color:var(--navy);">Automate Refresh</strong>
-            <p style="font-size:11px;color:var(--gray);margin-top:4px;line-height:1.5;">Daily/monthly auto-update without manual intervention</p>
-          </div>
-          <div class="feature-item">
-            <div style="font-size:24px;margin-bottom:7px;">📊</div>
-            <strong style="font-size:12.5px;color:var(--navy);">Enable Decisions</strong>
-            <p style="font-size:11px;color:var(--gray);margin-top:4px;line-height:1.5;">Provide real-time insights to executives &amp; managers</p>
+
+        <div>
+          <div class="eyebrow">Our Objectives</div>
+          <div class="grid-2" style="gap: 12px; margin-top: 10px;">
+            <div class="card"><div class="auto-num">01</div><div class="auto-title" style="font-size: 15px;">Centralize</div><p class="card-body">One unified data model.</p></div>
+            <div class="card"><div class="auto-num">02</div><div class="auto-title" style="font-size: 15px;">Accelerate</div><p class="card-body">Hours → seconds.</p></div>
+            <div class="card"><div class="auto-num">03</div><div class="auto-title" style="font-size: 15px;">Automate</div><p class="card-body">Refresh without intervention.</p></div>
+            <div class="card"><div class="auto-num">04</div><div class="auto-title" style="font-size: 15px;">Decide</div><p class="card-body">Real-time insights for leaders.</p></div>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="fb"></div>
-</div>
 
-<!-- ═══════════════════════════════════════
-     SLIDE 4 — ABOUT MARKETING
-════════════════════════════════════════ -->
-<div class="slide s-white" id="s4">
-  <div class="grid-l"></div>
+  <div class="footer-rule">
+    <span>03 · About Power BI</span>
+    <span>Foundation of the Transformation</span>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 4 — VISION & MISSION
+═══════════════════════════════════════════════════════ -->
+<section class="slide bg-paper" id="s4" data-label="Mission">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="grid-lines"></div>
+
+  <div class="corner-mark"><span class="mark-dot"></span>Section 02</div>
+  <div class="slide-num">04 / 16</div>
+
   <div class="slide-inner">
-    <div class="tag-pill-l">Section 02</div>
-    <h2 style="font-size:36px;color:var(--navy);">About <span class="anim-ul" style="color:var(--blue2);">Marketing</span></h2>
-    <div class="div"></div>
+    <div class="stagger">
+      <div class="kicker">Marketing Team</div>
+      <h2 class="section-title">Vision <em class="underline">&</em> Mission</h2>
+      <div class="divider"></div>
 
-    <div class="g2" style="gap:28px;margin-top:6px;">
-      <div class="card" style="border-left:4px solid var(--accent);">
-        <h3 style="font-size:13px;color:var(--navy);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;">🎯 Our Vision</h3>
-        <p style="font-size:16px;font-weight:600;color:var(--navy);line-height:1.5;margin-bottom:12px;">To be the most data-driven and agile marketing team in the petrochemical distribution sector.</p>
-        <p style="font-size:12.5px;color:var(--text2);line-height:1.7;">We strive to replace intuition-based decisions with evidence-backed strategies — leveraging real-time dashboards, pricing intelligence, and trade flow analytics.</p>
-      </div>
-      <div class="card" style="border-left:4px solid var(--blue2);">
-        <h3 style="font-size:13px;color:var(--navy);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;">🚀 Our Mission</h3>
-        <div style="display:flex;flex-direction:column;gap:9px;">
-          <div style="display:flex;gap:9px;align-items:flex-start;"><span style="color:var(--blue2);font-weight:700;flex-shrink:0;">01</span><p style="font-size:12.5px;color:var(--text2);line-height:1.6;">Monitor PTA/PX product performance through automated dashboards to support pricing and volume decisions</p></div>
-          <div style="display:flex;gap:9px;align-items:flex-start;"><span style="color:var(--blue2);font-weight:700;flex-shrink:0;">02</span><p style="font-size:12.5px;color:var(--text2);line-height:1.6;">Track export-import (EXIM) flows to identify trade opportunities and optimize supply chain efficiency</p></div>
-          <div style="display:flex;gap:9px;align-items:flex-start;"><span style="color:var(--blue2);font-weight:700;flex-shrink:0;">03</span><p style="font-size:12.5px;color:var(--text2);line-height:1.6;">Deliver daily pricing intelligence to enable rapid market response and competitive positioning</p></div>
+      <div class="grid-2" style="gap: 28px; margin-top: 14px;">
+        <div class="card card-glass" style="padding: 32px; border-left: 3px solid var(--blue);">
+          <div class="eyebrow">🎯 Our Vision</div>
+          <p class="display" style="font-size: 22px; color: var(--ink); margin-top: 14px; line-height: 1.3;">
+            To be the most <em>data-driven</em> and agile marketing team in the petrochemical distribution sector.
+          </p>
+          <p style="font-size: 14px; color: var(--text-soft); line-height: 1.7; margin-top: 16px;">
+            Replacing intuition-based decisions with evidence-backed strategies — leveraging real-time dashboards, pricing intelligence, and trade flow analytics to build sustainable competitive advantage.
+          </p>
+        </div>
+
+        <div class="card card-glass" style="padding: 32px; border-left: 3px solid var(--sky);">
+          <div class="eyebrow">🚀 Our Mission</div>
+          <div class="flex flex-col gap-md" style="margin-top: 14px;">
+            <div style="display: flex; gap: 14px; align-items: flex-start;">
+              <span style="font-family: 'Fraunces', serif; font-style: italic; color: var(--blue); font-size: 22px; line-height: 1; flex-shrink: 0;">01</span>
+              <p style="font-size: 14px; color: var(--text-soft); line-height: 1.6;">Monitor PTA/PX product performance through automated dashboards to support pricing and volume decisions</p>
+            </div>
+            <div style="display: flex; gap: 14px; align-items: flex-start;">
+              <span style="font-family: 'Fraunces', serif; font-style: italic; color: var(--blue); font-size: 22px; line-height: 1; flex-shrink: 0;">02</span>
+              <p style="font-size: 14px; color: var(--text-soft); line-height: 1.6;">Track export-import flows to identify trade opportunities and optimize supply chain efficiency</p>
+            </div>
+            <div style="display: flex; gap: 14px; align-items: flex-start;">
+              <span style="font-family: 'Fraunces', serif; font-style: italic; color: var(--blue); font-size: 22px; line-height: 1; flex-shrink: 0;">03</span>
+              <p style="font-size: 14px; color: var(--text-soft); line-height: 1.6;">Deliver daily pricing intelligence to enable rapid market response and competitive positioning</p>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div style="margin-top:18px;display:flex;gap:12px;flex-wrap:wrap;">
-      <div class="pill">PTA — Purified Terephthalic Acid</div>
-      <div class="pill">PX — Paraxylene</div>
-      <div class="pill">Petrochemical Distribution</div>
-      <div class="pill">Export–Import Analytics</div>
+      <div style="margin-top: 24px; display: flex; gap: 10px; flex-wrap: wrap;">
+        <span class="pill">PTA — Purified Terephthalic Acid</span>
+        <span class="pill">PX — Paraxylene</span>
+        <span class="pill">Petrochemical Distribution</span>
+        <span class="pill">Export–Import Analytics</span>
+        <span class="pill">Daily Pricing Intelligence</span>
+      </div>
     </div>
   </div>
-  <div class="fb"></div>
-</div>
 
-<!-- ═══════════════════════════════════════
+  <div class="footer-rule">
+    <span>04 · Vision & Mission</span>
+    <span>Strategic Direction</span>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
      SLIDE 5 — MY TASKS
-════════════════════════════════════════ -->
-<div class="slide s-light" id="s5">
-  <div class="grid-l"></div>
-  <div class="slide-inner">
-    <div class="kk">Section 03</div>
-    <h2 style="font-size:34px;color:var(--navy);">My Tasks — <span class="anim-ul" style="color:var(--blue2);">Data Process &amp; BI Analyst</span></h2>
-    <div class="div"></div>
+═══════════════════════════════════════════════════════ -->
+<section class="slide bg-deep" id="s5" data-label="Role">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="grid-lines"></div>
 
-    <div class="g2" style="gap:13px;">
-      <div style="display:flex;flex-direction:column;gap:10px;">
-        <div class="step-row"><span class="step-n">📥</span><div><strong style="font-size:13px;color:var(--navy);">Data Collection &amp; Validation</strong><p style="font-size:11.5px;color:var(--gray);margin-top:2px;line-height:1.5;">Gathered raw transactional data from multiple Excel sources; validated for completeness, consistency, and format compliance</p></div></div>
-        <div class="step-row" style="border-left-color:var(--accent);"><span class="step-n" style="color:var(--accent);">⚙️</span><div><strong style="font-size:13px;color:var(--navy);">Data Transformation (Power Query / DAX)</strong><p style="font-size:11.5px;color:var(--gray);margin-top:2px;line-height:1.5;">Cleaned and reshaped raw data — unpivoting tables, standardizing dates, removing duplicates, writing DAX KPI measures</p></div></div>
-        <div class="step-row"><span class="step-n">🗂️</span><div><strong style="font-size:13px;color:var(--navy);">Data Modeling &amp; Relationships</strong><p style="font-size:11.5px;color:var(--gray);margin-top:2px;line-height:1.5;">Designed star-schema data models connecting fact tables with dimension tables (product, date, region, customer)</p></div></div>
-        <div class="step-row"><span class="step-n">📊</span><div><strong style="font-size:13px;color:var(--navy);">Building Automated Dashboards</strong><p style="font-size:11.5px;color:var(--gray);margin-top:2px;line-height:1.5;">Developed 3 production dashboards: Executive Overview, EXIM, and Daily Pricing Monitor with scheduled auto-refresh</p></div></div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:10px;">
-        <div class="step-row"><span class="step-n">🎨</span><div><strong style="font-size:13px;color:var(--navy);">Interactive Visualization Design</strong><p style="font-size:11.5px;color:var(--gray);margin-top:2px;line-height:1.5;">Designed Deneb custom visuals, trend charts, slicers by product/region/date, and drill-through pages</p></div></div>
-        <div class="step-row"><span class="step-n">✅</span><div><strong style="font-size:13px;color:var(--navy);">Accuracy Testing &amp; Maintenance</strong><p style="font-size:11.5px;color:var(--gray);margin-top:2px;line-height:1.5;">Cross-checked all KPIs against source Excel files; performed monthly accuracy audits and maintained pipelines</p></div></div>
-        <div class="step-row"><span class="step-n">🤝</span><div><strong style="font-size:13px;color:var(--navy);">Business User Support &amp; Insights</strong><p style="font-size:11.5px;color:var(--gray);margin-top:2px;line-height:1.5;">Presented findings to marketing and operations teams; translated complex patterns into actionable business insights</p></div></div>
-        <div style="padding:13px 17px;background:rgba(37,99,235,.06);border-radius:12px;border:1px solid rgba(37,99,235,.15);text-align:center;">
-          <div style="font-size:10px;color:var(--blue2);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">Tech Stack</div>
-          <span class="pill">Power BI</span><span class="pill">Power Query</span><span class="pill">DAX</span><span class="pill">Deneb</span><span class="pill">Excel</span>
+  <div class="corner-mark"><span class="mark-dot"></span>Section 03</div>
+  <div class="slide-num">05 / 16</div>
+
+  <div class="slide-inner">
+    <div class="stagger">
+      <div class="kicker">My Role</div>
+      <h2 class="section-title">Data Process <em class="underline">& BI Analyst</em></h2>
+      <div class="divider"></div>
+
+      <div class="grid-2" style="gap: 14px; margin-top: 14px;">
+        <div class="flex flex-col gap-sm">
+          <div class="card-dark">
+            <div style="display: flex; gap: 14px; align-items: flex-start;">
+              <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(92,143,214,0.2); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;">📥</div>
+              <div>
+                <strong class="card-title">Data Collection & Validation</strong>
+                <p class="card-body">Gather & validate raw Excel sources.</p>
+              </div>
+            </div>
+          </div>
+          <div class="card-dark">
+            <div style="display: flex; gap: 14px; align-items: flex-start;">
+              <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(92,143,214,0.2); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;">⚙️</div>
+              <div>
+                <strong class="card-title">Data Transformation</strong>
+                <p class="card-body">Clean & reshape with Power Query + DAX.</p>
+              </div>
+            </div>
+          </div>
+          <div class="card-dark">
+            <div style="display: flex; gap: 14px; align-items: flex-start;">
+              <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(92,143,214,0.2); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;">🗂️</div>
+              <div>
+                <strong class="card-title">Data Modeling</strong>
+                <p class="card-body">Star-schema relationships.</p>
+              </div>
+            </div>
+          </div>
+          <div class="card-dark">
+            <div style="display: flex; gap: 14px; align-items: flex-start;">
+              <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(92,143,214,0.2); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;">📊</div>
+              <div>
+                <strong class="card-title">Dashboard Development</strong>
+                <p class="card-body">3 production dashboards, auto-refresh.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-sm">
+          <div class="card-dark">
+            <div style="display: flex; gap: 14px; align-items: flex-start;">
+              <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(92,143,214,0.2); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;">🎨</div>
+              <div>
+                <strong class="card-title">Visualization Design</strong>
+                <p class="card-body">Deneb visuals, slicers, drill-throughs.</p>
+              </div>
+            </div>
+          </div>
+          <div class="card-dark">
+            <div style="display: flex; gap: 14px; align-items: flex-start;">
+              <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(92,143,214,0.2); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;">✅</div>
+              <div>
+                <strong class="card-title">Accuracy Testing</strong>
+                <p class="card-body">Cross-check KPIs against source.</p>
+              </div>
+            </div>
+          </div>
+          <div class="card-dark">
+            <div style="display: flex; gap: 14px; align-items: flex-start;">
+              <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(92,143,214,0.2); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;">🤝</div>
+              <div>
+                <strong class="card-title">Business User Support</strong>
+                <p class="card-body">Translate data into insights.</p>
+              </div>
+            </div>
+          </div>
+          <div style="padding: 18px 20px; background: rgba(92,143,214,0.12); border-radius: 14px; border: 1px solid rgba(92,143,214,0.25); text-align: center;">
+            <div class="eyebrow" style="margin-bottom: 10px;">Tech Stack</div>
+            <div style="display: flex; gap: 6px; flex-wrap: wrap; justify-content: center;">
+              <span class="pill">Power BI</span>
+              <span class="pill">Power Query</span>
+              <span class="pill">DAX</span>
+              <span class="pill">Deneb</span>
+              <span class="pill">Excel</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="fb"></div>
-</div>
 
-<!-- ═══════════════════════════════════════
+  <div class="footer-rule">
+    <span>05 · Role</span>
+    <span>Data Process & BI Analyst</span>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
      SLIDE 6 — BACKGROUND
-════════════════════════════════════════ -->
-<div class="slide s-white" id="s6">
-  <div class="grid-l"></div>
+═══════════════════════════════════════════════════════ -->
+<section class="slide bg-paper" id="s6" data-label="Background">
+  <div class="blob blob-1"></div>
+  <div class="grid-lines"></div>
+
+  <div class="corner-mark"><span class="mark-dot"></span>Section 04</div>
+  <div class="slide-num">06 / 16</div>
+
   <div class="slide-inner">
-    <div class="kk">Section 04</div>
-    <h2 style="font-size:34px;color:var(--navy);">Background — <span class="anim-ul" style="color:var(--blue2);">Why Build a Power BI Dashboard?</span></h2>
-    <div class="div"></div>
+    <div class="stagger">
+      <div class="kicker">The Problem</div>
+      <h2 class="section-title">Why Build a <em class="underline">Power BI</em> Dashboard?</h2>
+      <div class="divider"></div>
 
-    <p style="font-size:13.5px;color:var(--text2);max-width:680px;line-height:1.7;margin-bottom:22px;">The marketing team was managing product performance, pricing, and trade data entirely through <strong style="color:var(--navy);">manual Excel reports</strong> — a process that was slow, error-prone, and unable to support real-time business decisions.</p>
+      <p class="lead" style="max-width: 780px; margin-top: 6px;">
+        The marketing team was managing product performance, pricing, and trade data entirely through <strong style="color: var(--ink);">manual Excel reports</strong> — a process that was slow, error-prone, and unable to support real-time business decisions.
+      </p>
 
-    <div class="g4">
-      <div class="stat-card"><div style="font-size:30px;margin-bottom:7px;">📋</div><div class="metric-v" style="font-size:24px;">Slow</div><div class="metric-l">Manual Reporting</div><p style="font-size:11px;color:var(--gray);margin-top:7px;line-height:1.5;">Reports took hours to compile each week from scattered Excel files</p></div>
-      <div class="stat-card"><div style="font-size:30px;margin-bottom:7px;">⚠️</div><div class="metric-v" style="font-size:24px;">High</div><div class="metric-l">Human Error Risk</div><p style="font-size:11px;color:var(--gray);margin-top:7px;line-height:1.5;">Manual copy-paste operations introduced inconsistencies and mistakes</p></div>
-      <div class="stat-card"><div style="font-size:30px;margin-bottom:7px;">🔍</div><div class="metric-v" style="font-size:24px;">Zero</div><div class="metric-l">Real-Time Visibility</div><p style="font-size:11px;color:var(--gray);margin-top:7px;line-height:1.5;">No live view of pricing, volume, or trade flows for rapid decisions</p></div>
-      <div class="stat-card"><div style="font-size:30px;margin-bottom:7px;">📂</div><div class="metric-v" style="font-size:24px;">Silo</div><div class="metric-l">Data Fragmentation</div><p style="font-size:11px;color:var(--gray);margin-top:7px;line-height:1.5;">Data lived in separate files per person, with no single source of truth</p></div>
-    </div>
+      <div class="grid-4" style="margin-top: 28px;">
+        <div class="card" style="text-align: center;">
+          <div style="font-size: 28px; margin-bottom: 8px;">📋</div>
+          <div class="metric-val">Slow</div>
+          <div class="metric-lbl">Manual Reporting</div>
+          <p style="font-size: 12px; color: var(--text-muted); margin-top: 10px; line-height: 1.5;">Reports took hours to compile from scattered Excel files</p>
+        </div>
+        <div class="card" style="text-align: center;">
+          <div style="font-size: 28px; margin-bottom: 8px;">⚠️</div>
+          <div class="metric-val">High</div>
+          <div class="metric-lbl">Human Error Risk</div>
+          <p style="font-size: 12px; color: var(--text-muted); margin-top: 10px; line-height: 1.5;">Copy-paste introduced inconsistencies and mistakes</p>
+        </div>
+        <div class="card" style="text-align: center;">
+          <div style="font-size: 28px; margin-bottom: 8px;">🔍</div>
+          <div class="metric-val">Zero</div>
+          <div class="metric-lbl">Real-Time Visibility</div>
+          <p style="font-size: 12px; color: var(--text-muted); margin-top: 10px; line-height: 1.5;">No live view of pricing, volume, or trade flows</p>
+        </div>
+        <div class="card" style="text-align: center;">
+          <div style="font-size: 28px; margin-bottom: 8px;">📂</div>
+          <div class="metric-val">Silo</div>
+          <div class="metric-lbl">Data Fragmentation</div>
+          <p style="font-size: 12px; color: var(--text-muted); margin-top: 10px; line-height: 1.5;">No single source of truth across the team</p>
+        </div>
+      </div>
 
-    <div style="margin-top:20px;padding:16px 22px;background:rgba(37,99,235,.07);border:1px solid rgba(37,99,235,.2);border-radius:14px;display:flex;align-items:center;gap:18px;">
-      <span style="font-size:30px;">💡</span>
-      <div><strong style="color:var(--blue2);">The Solution:</strong><span style="color:var(--text2);font-size:13.5px;margin-left:8px;">Build automated Power BI dashboards that centralize data, eliminate manual effort, enable real-time monitoring, and empower stakeholders with self-service analytics.</span></div>
+      <div style="margin-top: 32px; padding: 22px 28px; background: linear-gradient(135deg, rgba(33,85,200,0.08), rgba(92,143,214,0.06)); border: 1px solid rgba(33,85,200,0.18); border-radius: 16px; display: flex; align-items: center; gap: 22px;">
+        <div style="width: 56px; height: 56px; background: var(--grad-blue); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 26px; color: white; flex-shrink: 0;">💡</div>
+        <div>
+          <div class="eyebrow">The Solution</div>
+          <p style="font-size: 15px; color: var(--ink); line-height: 1.6; margin-top: 6px; font-weight: 500;">
+            Build automated Power BI dashboards that centralize data, eliminate manual effort, enable real-time monitoring, and empower every stakeholder with self-service analytics.
+          </p>
+        </div>
+      </div>
     </div>
   </div>
-  <div class="fb"></div>
-</div>
 
-<!-- ═══════════════════════════════════════
+  <div class="footer-rule">
+    <span>06 · Background</span>
+    <span>From Manual to Automated</span>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
      SLIDE 7 — SMART PROCESS
-════════════════════════════════════════ -->
-<div class="slide s-light" id="s7">
-  <div class="grid-l"></div>
+═══════════════════════════════════════════════════════ -->
+<section class="slide bg-blue" id="s7" data-label="SMART">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="grid-lines"></div>
+
+  <div class="corner-mark"><span class="mark-dot"></span>Section 05</div>
+  <div class="slide-num">07 / 16</div>
+
   <div class="slide-inner">
-    <div class="kk">Section 05 · Framework</div>
-    <h2 style="font-size:34px;color:var(--navy);">SMART Process in <span class="anim-ul" style="color:var(--blue2);">Dashboard Development</span></h2>
-    <div class="div"></div>
+    <div class="stagger">
+      <div class="kicker">Framework</div>
+      <h2 class="section-title"><em class="underline">SMART</em> Process in Dashboard Development</h2>
+      <div class="divider"></div>
 
-    <div class="g5" style="gap:13px;">
-      <div class="smart-i"><div class="smart-l">S — Specific</div><strong style="font-size:12.5px;color:var(--navy);display:block;margin-bottom:5px;">Defined Purpose</strong><p style="font-size:11.5px;color:var(--text2);line-height:1.6;">Dashboard scope is clearly defined: monitor PTA/PX performance, EXIM trade flows, and daily pricing movements — not generic reporting</p><div class="smart-l-bg">S</div></div>
-      <div class="smart-i"><div class="smart-l">M — Measurable</div><strong style="font-size:12.5px;color:var(--navy);display:block;margin-bottom:5px;">Clear KPIs</strong><p style="font-size:11.5px;color:var(--text2);line-height:1.6;">Every dashboard has quantifiable metrics: Value (USD), Quantity (KG), MoM growth %, shipment count, price delta — all tracked over time</p><div class="smart-l-bg">M</div></div>
-      <div class="smart-i"><div class="smart-l">A — Achievable</div><strong style="font-size:12.5px;color:var(--navy);display:block;margin-bottom:5px;">Data Ready</strong><p style="font-size:11.5px;color:var(--text2);line-height:1.6;">All data already exists in structured Excel files; Power Query connects and transforms it into a unified model — no new system required</p><div class="smart-l-bg">A</div></div>
-      <div class="smart-i"><div class="smart-l">R — Relevant</div><strong style="font-size:12.5px;color:var(--navy);display:block;margin-bottom:5px;">Business-Driven</strong><p style="font-size:11.5px;color:var(--text2);line-height:1.6;">Directly supports marketing, sales, and operations decisions: pricing strategy, supply planning, and trade optimization</p><div class="smart-l-bg">R</div></div>
-      <div class="smart-i"><div class="smart-l">T — Time-Bound</div><strong style="font-size:12.5px;color:var(--navy);display:block;margin-bottom:5px;">Auto-Refresh</strong><p style="font-size:11.5px;color:var(--text2);line-height:1.6;">Dashboards configured with scheduled daily/monthly refresh — ensuring data is always current without manual updates</p><div class="smart-l-bg">T</div></div>
-    </div>
+      <div class="grid-5" style="margin-top: 24px;">
+        <div class="smart-item">
+          <div class="smart-letter">S</div>
+          <div class="smart-label">S · Specific</div>
+          <strong style="font-size: 14px; color: var(--ink); display: block; margin: 8px 0 6px;">Defined Purpose</strong>
+          <p style="font-size: 12px; color: var(--text-soft); line-height: 1.6;">PTA/PX, EXIM, Pricing — clearly scoped.</p>
+        </div>
+        <div class="smart-item">
+          <div class="smart-letter">M</div>
+          <div class="smart-label">M · Measurable</div>
+          <strong style="font-size: 14px; color: var(--ink); display: block; margin: 8px 0 6px;">Clear KPIs</strong>
+          <p style="font-size: 12px; color: var(--text-soft); line-height: 1.6;">Value, Volume, MoM %, YoY, price delta.</p>
+        </div>
+        <div class="smart-item">
+          <div class="smart-letter">A</div>
+          <div class="smart-label">A · Achievable</div>
+          <strong style="font-size: 14px; color: var(--ink); display: block; margin: 8px 0 6px;">Data Ready</strong>
+          <p style="font-size: 12px; color: var(--text-soft); line-height: 1.6;">Existing Excel — Power Query unifies it.</p>
+        </div>
+        <div class="smart-item">
+          <div class="smart-letter">R</div>
+          <div class="smart-label">R · Relevant</div>
+          <strong style="font-size: 14px; color: var(--ink); display: block; margin: 8px 0 6px;">Business-Driven</strong>
+          <p style="font-size: 12px; color: var(--text-soft); line-height: 1.6;">Pricing, supply, trade decisions.</p>
+        </div>
+        <div class="smart-item">
+          <div class="smart-letter">T</div>
+          <div class="smart-label">T · Time-Bound</div>
+          <strong style="font-size: 14px; color: var(--ink); display: block; margin: 8px 0 6px;">Auto-Refresh</strong>
+          <p style="font-size: 12px; color: var(--text-soft); line-height: 1.6;">Scheduled daily — always current.</p>
+        </div>
+      </div>
 
-    <div style="margin-top:18px;padding:14px 20px;background:rgba(37,99,235,.06);border-radius:12px;border-left:4px solid var(--accent);">
-      <strong style="font-size:13px;color:var(--navy);">Key Insight:</strong>
-      <span style="font-size:13px;color:var(--text2);margin-left:8px;">Applying SMART ensured dashboards were built with clear business intent — not just aesthetically appealing visuals, but truly decision-enabling tools.</span>
+      <div style="margin-top: 30px; padding: 22px 28px; background: var(--white); border-radius: 16px; border-left: 4px solid var(--blue); box-shadow: var(--shadow-sm); display: flex; align-items: center; gap: 20px;">
+        <div style="font-size: 28px;">🔑</div>
+        <div>
+          <div class="eyebrow">Key Insight</div>
+          <p style="font-size: 15px; color: var(--ink); line-height: 1.6; margin-top: 4px; font-weight: 500;">
+            Dashboards built with business intent — decision-enabling, not decorative.
+          </p>
+        </div>
+      </div>
     </div>
   </div>
-  <div class="fb"></div>
-</div>
 
-<!-- ═══════════════════════════════════════
+  <div class="footer-rule">
+    <span>07 · SMART Framework</span>
+    <span>Building with Business Intent</span>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
      SLIDE 8 — DEVELOPMENT FLOW
-════════════════════════════════════════ -->
-<div class="slide s-blue" id="s8">
-  <div class="grid-w"></div>
+═══════════════════════════════════════════════════════ -->
+<section class="slide bg-deep" id="s8" data-label="Flow">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="grid-lines"></div>
+
+  <div class="corner-mark"><span class="mark-dot"></span>Section 06</div>
+  <div class="slide-num">08 / 16</div>
+
   <div class="slide-inner">
-    <div class="kk-w">Section 06</div>
-    <h2 style="font-size:34px;margin-bottom:18px;color:#fff;">Dashboard <span style="color:var(--accent);" class="anim-ul anim-ul-w">Development Flow</span></h2>
+    <div class="stagger">
+      <div class="kicker">Process</div>
+      <h2 class="section-title">Dashboard <em class="underline">Development</em> Flow</h2>
+      <div class="divider"></div>
 
-    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:9px;">
-      <div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:9px;">
-        <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--gold));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:17px;color:var(--navy);">1</div>
-        <div class="card-b" style="width:100%;padding:13px 9px;"><div style="font-size:20px;margin-bottom:5px;">🏢</div><strong style="font-size:10.5px;display:block;margin-bottom:4px;color:var(--accent);">Business Understanding</strong><p style="font-size:9.5px;color:rgba(255,255,255,.65);line-height:1.5;">Align with stakeholders on goals, KPIs, and user needs</p></div>
+      <div class="grid-7" style="margin-top: 36px;">
+        <div class="flow-step">
+          <div class="flow-step-num">1</div>
+          <div class="flow-step-card">
+            <div style="font-size: 22px; margin-bottom: 4px;">🏢</div>
+            <strong style="font-size: 11px; color: var(--sky-soft); display: block;">Business Understanding</strong>
+            <p style="font-size: 10px; color: rgba(255,255,255,0.7); line-height: 1.5; margin-top: 4px;">Align on goals, KPIs, user needs</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-num">2</div>
+          <div class="flow-step-card">
+            <div style="font-size: 22px; margin-bottom: 4px;">📂</div>
+            <strong style="font-size: 11px; color: var(--sky-soft); display: block;">Data Collection</strong>
+            <p style="font-size: 10px; color: rgba(255,255,255,0.7); line-height: 1.5; margin-top: 4px;">Standardize templates, identify sources</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-num">3</div>
+          <div class="flow-step-card">
+            <div style="font-size: 22px; margin-bottom: 4px;">🔧</div>
+            <strong style="font-size: 11px; color: var(--sky-soft); display: block;">Data Cleaning</strong>
+            <p style="font-size: 10px; color: rgba(255,255,255,0.7); line-height: 1.5; margin-top: 4px;">Remove duplicates, fix formats, handle nulls</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-num">4</div>
+          <div class="flow-step-card">
+            <div style="font-size: 22px; margin-bottom: 4px;">🗂️</div>
+            <strong style="font-size: 11px; color: var(--sky-soft); display: block;">Data Modeling</strong>
+            <p style="font-size: 10px; color: rgba(255,255,255,0.7); line-height: 1.5; margin-top: 4px;">Star schema, DAX measures & columns</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-num">5</div>
+          <div class="flow-step-card">
+            <div style="font-size: 22px; margin-bottom: 4px;">🎨</div>
+            <strong style="font-size: 11px; color: var(--sky-soft); display: block;">Visualization</strong>
+            <p style="font-size: 10px; color: rgba(255,255,255,0.7); line-height: 1.5; margin-top: 4px;">Interactive charts, slicers, Deneb visuals</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-num">6</div>
+          <div class="flow-step-card">
+            <div style="font-size: 22px; margin-bottom: 4px;">🔄</div>
+            <strong style="font-size: 11px; color: var(--sky-soft); display: block;">Automation</strong>
+            <p style="font-size: 10px; color: rgba(255,255,255,0.7); line-height: 1.5; margin-top: 4px;">Scheduled refresh, publish to Service</p>
+          </div>
+        </div>
+        <div class="flow-step">
+          <div class="flow-step-num">7</div>
+          <div class="flow-step-card">
+            <div style="font-size: 22px; margin-bottom: 4px;">✅</div>
+            <strong style="font-size: 11px; color: var(--sky-soft); display: block;">Testing & UAT</strong>
+            <p style="font-size: 10px; color: rgba(255,255,255,0.7); line-height: 1.5; margin-top: 4px;">Validate KPIs, gather feedback, iterate</p>
+          </div>
+        </div>
       </div>
-      <div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:9px;">
-        <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--gold));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:17px;color:var(--navy);">2</div>
-        <div class="card-b" style="width:100%;padding:13px 9px;"><div style="font-size:20px;margin-bottom:5px;">📂</div><strong style="font-size:10.5px;display:block;margin-bottom:4px;color:var(--accent);">Data Collection</strong><p style="font-size:9.5px;color:rgba(255,255,255,.65);line-height:1.5;">Standardize Excel templates; identify all data sources</p></div>
-      </div>
-      <div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:9px;">
-        <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--gold));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:17px;color:var(--navy);">3</div>
-        <div class="card-b" style="width:100%;padding:13px 9px;"><div style="font-size:20px;margin-bottom:5px;">🔧</div><strong style="font-size:10.5px;display:block;margin-bottom:4px;color:var(--accent);">Data Cleaning</strong><p style="font-size:9.5px;color:rgba(255,255,255,.65);line-height:1.5;">Power Query: remove duplicates, fix formats, handle nulls</p></div>
-      </div>
-      <div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:9px;">
-        <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--gold));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:17px;color:var(--navy);">4</div>
-        <div class="card-b" style="width:100%;padding:13px 9px;"><div style="font-size:20px;margin-bottom:5px;">🗂️</div><strong style="font-size:10.5px;display:block;margin-bottom:4px;color:var(--accent);">Data Modeling</strong><p style="font-size:9.5px;color:rgba(255,255,255,.65);line-height:1.5;">Build star schema; create DAX measures and calculated columns</p></div>
-      </div>
-      <div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:9px;">
-        <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--gold));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:17px;color:var(--navy);">5</div>
-        <div class="card-b" style="width:100%;padding:13px 9px;"><div style="font-size:20px;margin-bottom:5px;">🎨</div><strong style="font-size:10.5px;display:block;margin-bottom:4px;color:var(--accent);">Visualization</strong><p style="font-size:9.5px;color:rgba(255,255,255,.65);line-height:1.5;">Design interactive charts, slicers, Deneb visuals</p></div>
-      </div>
-      <div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:9px;">
-        <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--gold));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:17px;color:var(--navy);">6</div>
-        <div class="card-b" style="width:100%;padding:13px 9px;"><div style="font-size:20px;margin-bottom:5px;">🔄</div><strong style="font-size:10.5px;display:block;margin-bottom:4px;color:var(--accent);">Automation</strong><p style="font-size:9.5px;color:rgba(255,255,255,.65);line-height:1.5;">Configure scheduled refresh; publish to Power BI Service</p></div>
-      </div>
-      <div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:9px;">
-        <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--gold));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:17px;color:var(--navy);">7</div>
-        <div class="card-b" style="width:100%;padding:13px 9px;"><div style="font-size:20px;margin-bottom:5px;">✅</div><strong style="font-size:10.5px;display:block;margin-bottom:4px;color:var(--accent);">Testing &amp; UAT</strong><p style="font-size:9.5px;color:rgba(255,255,255,.65);line-height:1.5;">Validate against source data; gather user feedback; iterate</p></div>
-      </div>
-    </div>
 
-    <div style="margin-top:18px;display:flex;gap:13px;">
-      <div style="flex:1;padding:13px 17px;background:rgba(245,158,11,.1);border-radius:12px;border:1px solid rgba(245,158,11,.25);font-size:12px;color:rgba(255,255,255,.8);line-height:1.6;"><strong style="color:var(--accent);">⏱ Timeline:</strong> Each dashboard cycle (Steps 1–7) takes approximately 2–3 weeks, with ongoing maintenance thereafter.</div>
-      <div style="flex:1;padding:13px 17px;background:rgba(255,255,255,.07);border-radius:12px;border:1px solid rgba(255,255,255,.15);font-size:12px;color:rgba(255,255,255,.8);line-height:1.6;"><strong style="color:var(--accent);">🔑 Key Tool:</strong> Excel → Power Query → DAX → Deneb → Power BI Service</div>
+      <div class="grid-2" style="margin-top: 36px; gap: 16px;">
+        <div class="card-dark">
+          <div class="eyebrow">⏱ Timeline</div>
+          <p style="font-size: 14px; color: rgba(255,255,255,0.85); margin-top: 6px; line-height: 1.6;">Each dashboard cycle (Steps 1–7) takes approximately <strong style="color: var(--sky-soft);">2–3 weeks</strong>, with ongoing maintenance thereafter.</p>
+        </div>
+        <div class="card-dark">
+          <div class="eyebrow">🔑 Key Tool at Each Step</div>
+          <p style="font-size: 14px; color: rgba(255,255,255,0.85); margin-top: 6px; line-height: 1.6; font-family: 'JetBrains Mono', monospace;">
+            Excel → Power Query → DAX → Deneb → Power BI Service
+          </p>
+        </div>
+      </div>
     </div>
   </div>
-  <div class="fb-w"></div>
-</div>
 
-<!-- ═══════════════════════════════════════
-     SLIDE 9 — PTA/PX DATABASE DASHBOARD
-════════════════════════════════════════ -->
-<div class="slide s-light" id="s9">
-  <div class="grid-l"></div>
+  <div class="footer-rule">
+    <span>08 · Development Flow</span>
+    <span>Seven Steps · Two to Three Weeks</span>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 9 — PTA/PX DATABASE
+═══════════════════════════════════════════════════════ -->
+<section class="slide bg-paper" id="s9" data-label="PTA/PX">
+  <div class="blob blob-1"></div>
+  <div class="grid-lines"></div>
+
+  <div class="corner-mark"><span class="mark-dot"></span>Dashboard 01 · Operations</div>
+  <div class="slide-num">09 / 16</div>
+
   <div class="slide-inner">
-    <div class="kk">Section 07A · Dashboard Deep-Dive</div>
-    <h2 style="font-size:32px;color:var(--navy);">Executive Overall Dashboard <span class="anim-ul" style="color:var(--blue2);">(PTA / PX)</span></h2>
-    <div class="div"></div>
+    <div class="stagger">
+      <div class="kicker">Dashboard Deep-Dive</div>
+      <h2 class="section-title"><em class="underline">PTA/PX</em> Database</h2>
+      <div class="divider"></div>
 
-    <div style="display:grid;grid-template-columns:1.1fr 0.9fr;gap:26px;flex:1;min-height:0;">
-      <!-- LEFT: IMAGE -->
-      <div style="display:flex;flex-direction:column;gap:10px;min-height:0;">
-        <div class="img-frame" style="flex:1;min-height:0;">
-          <img src="https://raw.githubusercontent.com/azhar211102/azhar211102github.io/ebed4fe5dbbbad1f965d0e519b13fc7b1ed0f2ae/img/PTAPXDatabase.png"
-               alt="PTA/PX Database Dashboard"
-               style="width:100%;height:100%;object-fit:contain;"
-               onerror="this.parentElement.innerHTML='<div style=\'padding:32px;text-align:center;color:var(--gray);font-size:13px;\'>📊 PTA/PX Database Dashboard<br><span style=\'font-size:11px;\'>Image not available</span></div>'">
-        </div>
-        <div class="img-lbl">PTA / PX Database — Real-Time Operations Dashboard</div>
-      </div>
-
-      <!-- RIGHT: CONTENT -->
-      <div style="display:flex;flex-direction:column;gap:14px;">
-        <div class="card" style="border-top:3px solid var(--blue2);padding:16px 20px;">
-          <div style="font-size:11px;color:var(--blue2);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;font-weight:700;">Objective</div>
-          <p style="font-size:13px;color:var(--text2);line-height:1.65;">Provide C-level and senior management with a high-level view of PTA and PX product performance — enabling quick identification of growth trends, underperformance, and strategic opportunities.</p>
+      <div class="dash-hero" style="margin-top: 20px;">
+        <div class="dash-image-wrap">
+          <div class="dash-image-badge">PTA/PX Operations Monitor</div>
+          <img src="https://raw.githubusercontent.com/azhar211102/azhar211102github.io/ebed4fe5dbbbad1f965d0e519b13fc7b1ed0f2ae/img/PTAPXDatabase.png" alt="PTA/PX Database Dashboard">
         </div>
 
-        <div class="exec-bullets">
-          <div class="exec-bullet">
-            <div class="eb-icon">📡</div>
-            <div class="eb-text"><strong>Real-time monitoring of PTA/PX operational performance</strong>Live visibility into production rates, utilization, and KPIs without waiting for manual reports</div>
-          </div>
-          <div class="exec-bullet">
-            <div class="eb-icon">📈</div>
-            <div class="eb-text"><strong>Immediate visibility into production trends and utilization</strong>Multi-year trend analysis (2021–2025) with MoM and YoY comparison at a glance</div>
-          </div>
-          <div class="exec-bullet">
-            <div class="eb-icon">🧭</div>
-            <div class="eb-text"><strong>Supports strategic decision-making for supply and pricing</strong>Executive insights that directly inform volume, procurement, and commercial strategy</div>
-          </div>
-        </div>
+        <div>
+          <div class="eyebrow" style="margin-bottom: 14px;">Executive Summary</div>
+          <p class="lead" style="font-size: 16px; margin-bottom: 18px;">
+            Tracks actual vs target production and utilization across PTA and PX plants — filterable by country, producer, and year.
+          </p>
 
-        <div style="margin-top:auto;padding-top:8px;">
-          <a href="https://app.powerbi.com/groups/me/reports/fe630bd4-547e-4601-bd76-839e6fc0f918/9720e6143e6674e22ae9?experience=power-bi"
-             target="_blank" class="db-btn">
-            <span>🔗</span> Open PTA/PX Dashboard
-          </a>
+          <div class="bullet-premium">
+            <div class="bp-num">01</div>
+            <div class="bp-text">Real-time operational monitoring</div>
+          </div>
+          <div class="bullet-premium">
+            <div class="bp-num">02</div>
+            <div class="bp-text">Production trends & utilization at a glance</div>
+          </div>
+          <div class="bullet-premium">
+            <div class="bp-num">03</div>
+            <div class="bp-text">Supports supply & pricing decisions</div>
+          </div>
+
+          <div style="margin-top: 22px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+            <a href="https://app.powerbi.com/groups/me/reports/fe630bd4-547e-4601-bd76-839e6fc0f918/9720e6143e6674e22ae9?experience=power-bi" target="_blank" class="open-dash-btn">
+              Open Dashboard
+              <span class="odb-arrow">↗</span>
+            </a>
+            <span class="pill">Operation Rate</span>
+            <span class="pill">Top Producer</span>
+          </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="fb"></div>
-</div>
 
-<!-- ═══════════════════════════════════════
-     SLIDE 10 — EXIM OVERVIEW DASHBOARD
-════════════════════════════════════════ -->
-<div class="slide s-white" id="s10">
-  <div class="grid-l"></div>
+  <div class="footer-rule">
+    <span>09 · PTA/PX Database</span>
+    <span>Operations Monitoring Dashboard</span>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 10 — EXIM OVERVIEW
+═══════════════════════════════════════════════════════ -->
+<section class="slide bg-blue" id="s10" data-label="EXIM">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="grid-lines"></div>
+
+  <div class="corner-mark"><span class="mark-dot"></span>Dashboard 02 · Trade</div>
+  <div class="slide-num">10 / 16</div>
+
   <div class="slide-inner">
-    <div class="kk">Section 07B · Dashboard Deep-Dive</div>
-    <h2 style="font-size:32px;color:var(--navy);">EXIM Dashboard — <span class="anim-ul" style="color:var(--blue2);">Export &amp; Import Analytics</span></h2>
-    <div class="div"></div>
+    <div class="stagger">
+      <div class="kicker">Dashboard Deep-Dive</div>
+      <h2 class="section-title"><em class="underline">EXIM</em> Overview</h2>
+      <div class="divider"></div>
 
-    <div style="display:grid;grid-template-columns:1.1fr 0.9fr;gap:26px;flex:1;min-height:0;">
-      <!-- LEFT: IMAGE -->
-      <div style="display:flex;flex-direction:column;gap:10px;min-height:0;">
-        <div class="img-frame" style="flex:1;min-height:0;">
-          <img src="https://raw.githubusercontent.com/azhar211102/azhar211102github.io/ebed4fe5dbbbad1f965d0e519b13fc7b1ed0f2ae/img/EXIMOverview.png"
-               alt="EXIM Overview Dashboard"
-               style="width:100%;height:100%;object-fit:contain;"
-               onerror="this.parentElement.innerHTML='<div style=\'padding:32px;text-align:center;color:var(--gray);font-size:13px;\'>🚢 EXIM Overview Dashboard<br><span style=\'font-size:11px;\'>Image not available</span></div>'">
-        </div>
-        <div class="img-lbl">EXIM Overview — Trade Flows &amp; Market Intelligence</div>
-      </div>
+      <div class="dash-hero" style="margin-top: 20px; grid-template-columns: 1fr 1.15fr;">
+        <div>
+          <div class="eyebrow" style="margin-bottom: 14px;">Executive Summary</div>
+          <p class="lead" style="font-size: 16px; margin-bottom: 18px;">
+            Trade intelligence for PET Bottle, PTA, Paraxylene & Acetic Acid — with YoY analysis and USD/KG toggle.
+          </p>
 
-      <!-- RIGHT: CONTENT -->
-      <div style="display:flex;flex-direction:column;gap:14px;">
-        <div class="card" style="border-top:3px solid var(--blue2);padding:16px 20px;">
-          <div style="font-size:11px;color:var(--blue2);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;font-weight:700;">Objective</div>
-          <p style="font-size:13px;color:var(--text2);line-height:1.65;">Monitor and analyze international export and import activities for PTA/PX — providing a clear picture of trade flows, destination markets, shipment volumes, and transaction values over time.</p>
-        </div>
-
-        <div class="exec-bullets">
-          <div class="exec-bullet">
-            <div class="eb-icon">🌍</div>
-            <div class="eb-text"><strong>Clear visibility of export and import trade flows</strong>Choropleth maps and stacked charts showing volume and value by destination country</div>
+          <div class="bullet-premium">
+            <div class="bp-num">01</div>
+            <div class="bp-text">Clear visibility of export & import flows</div>
           </div>
-          <div class="exec-bullet">
-            <div class="eb-icon">🔎</div>
-            <div class="eb-text"><strong>Identification of key markets and trade opportunities</strong>Top-5 trade partner rankings with MoM trend annotations and seasonal pattern analysis</div>
+          <div class="bullet-premium">
+            <div class="bp-num">02</div>
+            <div class="bp-text">Identifies key markets & opportunities</div>
           </div>
-          <div class="exec-bullet">
-            <div class="eb-icon">🚛</div>
-            <div class="eb-text"><strong>Enables data-driven logistics and supply chain decisions</strong>Cross-filter by product, country, and date to pinpoint allocation priorities and market risks</div>
+          <div class="bullet-premium">
+            <div class="bp-num">03</div>
+            <div class="bp-text">Drives data-led logistics decisions</div>
+          </div>
+
+          <div style="margin-top: 22px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+            <a href="https://app.powerbi.com/groups/me/reports/c1cf4868-a4a5-4a13-8af6-39a1185cfcaa/ad2b1bd0f473fdaa4aaa?experience=power-bi" target="_blank" class="open-dash-btn">
+              Open Dashboard
+              <span class="odb-arrow">↗</span>
+            </a>
+            <span class="pill">YoY</span>
+            <span class="pill">Trade Balance</span>
           </div>
         </div>
 
-        <div style="margin-top:auto;padding-top:8px;">
-          <a href="https://app.powerbi.com/groups/me/reports/c1cf4868-a4a5-4a13-8af6-39a1185cfcaa/ad2b1bd0f473fdaa4aaa?experience=power-bi"
-             target="_blank" class="db-btn">
-            <span>🔗</span> Open EXIM Dashboard
-          </a>
+        <div class="dash-image-wrap">
+          <div class="dash-image-badge">EXIM Trade Flows</div>
+          <img src="https://raw.githubusercontent.com/azhar211102/azhar211102github.io/ebed4fe5dbbbad1f965d0e519b13fc7b1ed0f2ae/img/EXIMOverview.png" alt="EXIM Overview Dashboard">
         </div>
       </div>
     </div>
   </div>
-  <div class="fb"></div>
-</div>
 
-<!-- ═══════════════════════════════════════
-     SLIDE 11 — DAILY PRICING (SCROLLABLE)
-════════════════════════════════════════ -->
-<div class="slide s-light" id="s11">
-  <div class="grid-l"></div>
-
-  <!-- STICKY HEADER -->
-  <div style="padding:28px 66px 0;position:relative;z-index:2;background:linear-gradient(145deg,#F0F5FF 0%,#E6EFFE 60%,#EEF2FF 100%);flex-shrink:0;">
-    <div class="kk">Section 07C · Daily Pricing — Fully Automated Pipeline</div>
-    <h2 style="font-size:30px;color:var(--navy);">Daily Pricing Monitor — <span class="anim-ul" style="color:var(--blue2);">Automation Deep Dive</span></h2>
-    <div class="div" style="margin-bottom:0;"></div>
+  <div class="footer-rule">
+    <span>10 · EXIM Overview</span>
+    <span>Export · Import Analytics</span>
   </div>
+</section>
 
-  <!-- SCROLLABLE CONTENT -->
-  <div class="si-scroll" style="padding-top:18px;">
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 11 — DAILY PRICING (SCROLLABLE · HERO SECTION)
+═══════════════════════════════════════════════════════ -->
+<section class="slide bg-paper scroll-slide" id="s11" data-label="Pricing">
+  <div class="grain" style="z-index: 0;"></div>
 
-    <!-- TWO IMAGES ROW -->
-    <div class="g2" style="gap:20px;margin-bottom:20px;">
-      <div style="display:flex;flex-direction:column;gap:8px;">
-        <div class="img-frame" style="height:200px;">
-          <img src="https://raw.githubusercontent.com/azhar211102/azhar211102github.io/ebed4fe5dbbbad1f965d0e519b13fc7b1ed0f2ae/img/RawDataDailyPricing.png"
-               alt="Raw Data Daily Pricing"
-               style="width:100%;height:200px;object-fit:contain;"
-               onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:var(--gray);font-size:12px;height:200px;display:flex;align-items:center;justify-content:center;\'>📋 Raw Excel Data</div>'">
-        </div>
-        <div class="img-lbl">📋 Input — Raw Excel Data (e.g. "Mar Average" Sheet)</div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:8px;">
-        <div class="img-frame" style="height:200px;">
-          <img src="https://raw.githubusercontent.com/azhar211102/azhar211102github.io/ebed4fe5dbbbad1f965d0e519b13fc7b1ed0f2ae/img/Daily%20Pricing.png"
-               alt="Daily Pricing Dashboard"
-               style="width:100%;height:200px;object-fit:contain;"
-               onerror="this.parentElement.innerHTML='<div style=\'padding:20px;text-align:center;color:var(--gray);font-size:12px;height:200px;display:flex;align-items:center;justify-content:center;\'>📊 Power BI Dashboard</div>'">
-        </div>
-        <div class="img-lbl">📊 Output — Automated Power BI Dashboard</div>
-      </div>
-    </div>
-
-    <!-- AUTOMATION STEPS HEADER -->
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-      <div style="width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--blue2),var(--blue3));display:flex;align-items:center;justify-content:center;font-size:16px;">⚙️</div>
-      <h3 style="font-size:15px;color:var(--navy);">Automation Logic — <span style="color:var(--blue2);">Key Business Concepts</span></h3>
-    </div>
-
-    <!-- STEP 1 -->
-    <div class="auto-step">
-      <div>
-        <div class="as-title">① Automatic Sheet Detection</div>
-        <div class="code-b">Text.Contains([Name], "Average")</div>
-      </div>
-      <div class="as-biz">
-        <strong style="color:var(--navy);display:block;margin-bottom:3px;">What it means</strong>
-        Automatically detects and ingests new monthly sheets — e.g., <em>"Mar Average"</em> — without any manual configuration. Just add a new sheet and Power Query picks it up.
-      </div>
-    </div>
-
-    <!-- STEP 2 -->
-    <div class="auto-step">
-      <div>
-        <div class="as-title">② Dynamic Month Extraction</div>
-        <div class="code-b">Text.BeforeDelimiter([Name], " ")</div>
-      </div>
-      <div class="as-biz">
-        <strong style="color:var(--navy);display:block;margin-bottom:3px;">What it means</strong>
-        Automatically extracts the month name from the sheet tab (e.g., <em>"Mar"</em> from <em>"Mar Average"</em>). No hardcoding required — works for every month automatically.
-      </div>
-    </div>
-
-    <!-- STEP 3 -->
-    <div class="auto-step">
-      <div>
-        <div class="as-title">③ Transformation Pipeline</div>
-        <div class="code-b">fn_TransformDaily([SheetData], [MonthName], [MonthNumber])</div>
-      </div>
-      <div class="as-biz">
-        <strong style="color:var(--navy);display:block;margin-bottom:3px;">What it means</strong>
-        A reusable function converts messy, multi-column Excel data into a clean, structured daily dataset ready for Power BI — applied to every sheet automatically.
-      </div>
-    </div>
-
-    <!-- STEP 4 -->
-    <div class="auto-step">
-      <div>
-        <div class="as-title">④ Data Cleaning</div>
-        <div class="code-b">Table.SelectRows(...)</div>
-      </div>
-      <div class="as-biz">
-        <strong style="color:var(--navy);display:block;margin-bottom:3px;">What it means</strong>
-        Removes empty rows, invalid entries, and zero-value records — ensuring only quality data reaches the dashboard. No manual cleaning required.
-      </div>
-    </div>
-
-    <!-- STEP 5 -->
-    <div class="auto-step">
-      <div>
-        <div class="as-title">⑤ Daily Change Calculation</div>
-        <div class="code-b">([Price] - [PrevPrice]) / [PrevPrice]</div>
-      </div>
-      <div class="as-biz">
-        <strong style="color:var(--navy);display:block;margin-bottom:3px;">What it means</strong>
-        Calculates day-over-day price movement as a percentage. Instantly surfaces market volatility with color-coded △ indicators in the dashboard.
-      </div>
-    </div>
-
-    <!-- STEP 6 -->
-    <div class="auto-step">
-      <div>
-        <div class="as-title">⑥ Product Classification</div>
-        <div class="code-b">Text.Contains([Product], ...)</div>
-      </div>
-      <div class="as-biz">
-        <strong style="color:var(--navy);display:block;margin-bottom:3px;">What it means</strong>
-        Automatically categorizes raw column names into business products:<br>
-        <span class="pill" style="margin:3px 2px;font-size:10px;">PX</span>
-        <span class="pill" style="margin:3px 2px;font-size:10px;">PTA</span>
-        <span class="pill" style="margin:3px 2px;font-size:10px;">Naphtha</span>
-        <span class="pill" style="margin:3px 2px;font-size:10px;">Benzene</span>
-        <span class="pill" style="margin:3px 2px;font-size:10px;">Ethylene</span>
-        <span class="pill" style="margin:3px 2px;font-size:10px;">Spread</span>
-        <span class="pill" style="margin:3px 2px;font-size:10px;">Crude</span>
-      </div>
-    </div>
-
-    <!-- STEP 7 -->
-    <div class="auto-step">
-      <div>
-        <div class="as-title">⑦ Monthly Average</div>
-        <div class="code-b">List.Average(...)</div>
-      </div>
-      <div class="as-biz">
-        <strong style="color:var(--navy);display:block;margin-bottom:3px;">What it means</strong>
-        Automatically calculates monthly average price per product. Always up-to-date — no manual spreadsheet averaging needed by the team.
-      </div>
-    </div>
-
-    <!-- STEP 8 -->
-    <div class="auto-step">
-      <div>
-        <div class="as-title">⑧ Product Mapping</div>
-        <div class="code-b">Products = &#123; Column → Product → Category → Unit &#125;</div>
-      </div>
-      <div class="as-biz">
-        <strong style="color:var(--navy);display:block;margin-bottom:3px;">What it means</strong>
-        Maps raw Excel column headers to structured business metadata: product name, category, and unit — turning unstructured data into a clean, reportable dataset.
-      </div>
-    </div>
-
-    <!-- FINAL MESSAGE + BUTTON -->
-    <div class="final-msg" style="background:linear-gradient(135deg,rgba(245,158,11,.12),rgba(37,99,235,.08));border:2px solid rgba(245,158,11,.35);">
-      <div class="fm-icon">🚀</div>
-      <div class="fm-text" style="color:var(--navy);">
-        "From manual Excel → <span style="color:var(--blue2);">Fully automated Power BI pipeline</span>"<br>
-        <span style="font-weight:400;font-size:12px;color:var(--text2);">New month? Just drop in the Excel sheet. Power BI handles the rest automatically.</span>
-      </div>
-    </div>
-
-    <div style="margin-top:16px;padding-bottom:4px;">
-      <a href="https://app.powerbi.com/groups/me/reports/f8d4896a-012c-4af0-b74a-24bc7baecfac/75b0eed49e0074cc4766?experience=power-bi"
-         target="_blank" class="db-btn">
-        <span>🔗</span> Open Daily Pricing Dashboard
-      </a>
-    </div>
-
-  </div><!-- end scrollable -->
-  <div class="fb"></div>
-</div>
-
-<!-- ═══════════════════════════════════════
-     SLIDE 12 — CHALLENGE & RESPONSE
-════════════════════════════════════════ -->
-<div class="slide s-white" id="s12">
-  <div class="grid-l"></div>
   <div class="slide-inner">
-    <div class="kk">Section 10</div>
-    <h2 style="font-size:34px;color:var(--navy);">Challenge <span style="color:var(--blue2);">&amp;</span> <span class="anim-ul" style="color:var(--blue2);">Response</span></h2>
-    <div class="div"></div>
+    <div class="scroll-container" id="scroll-pricing">
 
-    <div class="g2" style="gap:26px;">
-      <div>
-        <h3 style="font-size:12px;color:#DC2626;text-transform:uppercase;letter-spacing:2px;margin-bottom:13px;">⚠️ Challenges Faced</h3>
-        <div class="ch-i"><span style="font-size:20px;">📋</span><div><strong style="font-size:13px;color:var(--navy);">Inconsistent Data Formats</strong><p style="font-size:12px;color:var(--text2);margin-top:3px;line-height:1.5;">Different teams used different date formats, column naming conventions, and unit representations — making consolidation impossible without manual fixing.</p></div></div>
-        <div class="ch-i"><span style="font-size:20px;">🕐</span><div><strong style="font-size:13px;color:var(--navy);">Manual Reporting Inefficiency</strong><p style="font-size:12px;color:var(--text2);margin-top:3px;line-height:1.5;">Weekly reports required 2–4 hours of manual compilation — prone to errors and always one step behind current business reality.</p></div></div>
-        <div class="ch-i" style="margin-bottom:0;"><span style="font-size:20px;">🔁</span><div><strong style="font-size:13px;color:var(--navy);">Data Duplication &amp; Silos</strong><p style="font-size:12px;color:var(--text2);margin-top:3px;line-height:1.5;">Multiple versions of the same data existed across departments, causing confusion and contradicting reports — leading to distrust in numbers.</p></div></div>
+      <!-- STICKY HEADER -->
+      <div class="scroll-sticky-head">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 20px;">
+          <div>
+            <div class="kicker">Dashboard 03 · The Automated One</div>
+            <h2><em>Daily Pricing</em> — Automated Intelligence Pipeline</h2>
+          </div>
+          <div style="display: flex; gap: 14px; align-items: center;">
+            <a href="https://app.powerbi.com/groups/me/reports/f8d4896a-012c-4af0-b74a-24bc7baecfac/75b0eed49e0074cc4766?experience=power-bi" target="_blank" class="open-dash-btn">
+              Open Dashboard
+              <span class="odb-arrow">↗</span>
+            </a>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); white-space: nowrap;">
+              Scroll ↓
+            </div>
+          </div>
+        </div>
       </div>
-      <div>
-        <h3 style="font-size:12px;color:#16A34A;text-transform:uppercase;letter-spacing:2px;margin-bottom:13px;">✅ How We Responded</h3>
-        <div class="re-i"><span style="font-size:20px;">📐</span><div><strong style="font-size:13px;color:var(--navy);">Standardized Excel Input Templates</strong><p style="font-size:12px;color:var(--text2);margin-top:3px;line-height:1.5;">Designed locked input templates with data validation rules, standardized column headers, and enforced date/unit formats — eliminating format inconsistency at the source.</p></div></div>
-        <div class="re-i"><span style="font-size:20px;">⚡</span><div><strong style="font-size:13px;color:var(--navy);">Automated Power BI Dashboards</strong><p style="font-size:12px;color:var(--text2);margin-top:3px;line-height:1.5;">Replaced manual Excel reports with automated dashboards that refresh daily — reducing reporting effort from hours to zero while improving accuracy and timeliness.</p></div></div>
-        <div class="re-i" style="margin-bottom:0;"><span style="font-size:20px;">🔧</span><div><strong style="font-size:13px;color:var(--navy);">Power Query Data Cleaning Logic</strong><p style="font-size:12px;color:var(--text2);margin-top:3px;line-height:1.5;">Built reusable Power Query scripts to detect and flag duplicates, normalize formats, and merge data from all sources into a single verified master dataset.</p></div></div>
+
+      <div class="scroll-content">
+
+        <!-- INTRO -->
+        <div style="max-width: 820px;">
+          <p class="lead" style="font-size: 18px;">
+            Petrochemical prices are volatile. Without real-time pricing, teams risk quoting stale prices — losing margin or missing deals. <strong style="color: var(--ink);">This dashboard solves that through a fully automated pipeline</strong> — drop in a new monthly sheet and everything flows automatically.
+          </p>
+        </div>
+
+        <!-- DASHBOARD IMAGE -->
+        <div>
+          <div class="eyebrow" style="margin-bottom: 14px;">The Dashboard</div>
+          <div class="dash-image-wrap">
+            <div class="dash-image-badge">Daily Pricing Monitor</div>
+            <img src="https://raw.githubusercontent.com/azhar211102/azhar211102github.io/ebed4fe5dbbbad1f965d0e519b13fc7b1ed0f2ae/img/Daily%20Pricing.png" alt="Daily Pricing Dashboard">
+          </div>
+        </div>
+
+        <!-- RAW DATA IMAGE -->
+        <div>
+          <div class="eyebrow" style="margin-bottom: 14px;">The Raw Excel Source</div>
+          <div class="sc-block" style="grid-template-columns: 1fr 1fr;">
+            <div class="dash-image-wrap">
+              <div class="dash-image-badge" style="color: var(--red);">Before · Raw Data</div>
+              <img src="https://raw.githubusercontent.com/azhar211102/azhar211102github.io/ebed4fe5dbbbad1f965d0e519b13fc7b1ed0f2ae/img/RawDataDailyPricing.png" alt="Raw Daily Pricing Excel">
+            </div>
+            <div>
+              <h3 style="font-family: 'Fraunces', serif; font-size: 26px; color: var(--ink); font-weight: 400; line-height: 1.2; letter-spacing: -0.02em;">
+                A new sheet every month — <em style="font-style: italic; color: var(--blue);">"Mar Average"</em>, <em style="font-style: italic; color: var(--blue);">"Apr Average"</em>, and so on.
+              </h3>
+              <p style="font-size: 15px; color: var(--text-soft); line-height: 1.7; margin-top: 16px;">
+                Previously, someone had to open each sheet, copy the numbers, clean up format errors, and paste them into a consolidated report. With this pipeline — <strong style="color: var(--ink);">zero manual work</strong>. Power Query detects the new sheet, parses it, and integrates it into the dataset automatically.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- AUTOMATION SECTION TITLE -->
+        <div style="margin-top: 28px;">
+          <div class="eyebrow" style="margin-bottom: 10px;">Inside the Automation</div>
+          <h3 style="font-family: 'Fraunces', serif; font-size: 36px; color: var(--ink); font-weight: 400; line-height: 1.1; letter-spacing: -0.025em; max-width: 20ch;">
+            Eight pieces of logic that make this <em style="font-style: italic; color: var(--blue);">run itself</em>.
+          </h3>
+        </div>
+
+        <!-- 8 AUTOMATION CARDS -->
+        <div class="automation-grid">
+
+          <div class="auto-card">
+            <div class="auto-num">01</div>
+            <div class="auto-title">Automatic Sheet Detection</div>
+            <code class="auto-code">Text.Contains([Name], "Average")</code>
+            <p class="auto-meaning"><strong>What it does:</strong> Automatically detects any new monthly sheet (e.g. <em>"Mar Average"</em>) — no code changes needed when a new month arrives.</p>
+          </div>
+
+          <div class="auto-card">
+            <div class="auto-num">02</div>
+            <div class="auto-title">Dynamic Month Extraction</div>
+            <code class="auto-code">Text.BeforeDelimiter([Name], " ")</code>
+            <p class="auto-meaning"><strong>What it does:</strong> Reads the month name directly from the sheet name — the dataset always knows which month each price belongs to.</p>
+          </div>
+
+          <div class="auto-card">
+            <div class="auto-num">03</div>
+            <div class="auto-title">Transformation Pipeline</div>
+            <code class="auto-code">fn_TransformDaily([SheetData], [MonthName], [MonthNumber])</code>
+            <p class="auto-meaning"><strong>What it does:</strong> A single function converts messy Excel sheets into a structured daily dataset — consistent format every time.</p>
+          </div>
+
+          <div class="auto-card">
+            <div class="auto-num">04</div>
+            <div class="auto-title">Data Cleaning</div>
+            <code class="auto-code">Table.SelectRows(...)</code>
+            <p class="auto-meaning"><strong>What it does:</strong> Removes empty rows, invalid entries, and zero values before they reach the dashboard — no bad data slips through.</p>
+          </div>
+
+          <div class="auto-card">
+            <div class="auto-num">05</div>
+            <div class="auto-title">Daily Change Calculation</div>
+            <code class="auto-code">([Price] - [PrevPrice]) / [PrevPrice]</code>
+            <p class="auto-meaning"><strong>What it does:</strong> Computes day-over-day price movement automatically — users instantly see what went up and what went down.</p>
+          </div>
+
+          <div class="auto-card">
+            <div class="auto-num">06</div>
+            <div class="auto-title">Product Classification</div>
+            <code class="auto-code">Text.Contains([Product], ...)</code>
+            <p class="auto-meaning"><strong>What it does:</strong> Sorts every product into its proper category — <em>PX, PTA, Naphtha, Benzene, Ethylene, Spread, Crude</em> — with zero manual tagging.</p>
+          </div>
+
+          <div class="auto-card">
+            <div class="auto-num">07</div>
+            <div class="auto-title">Monthly Average</div>
+            <code class="auto-code">List.Average(...)</code>
+            <p class="auto-meaning"><strong>What it does:</strong> Calculates the monthly average price automatically — no more end-of-month spreadsheet formulas.</p>
+          </div>
+
+          <div class="auto-card">
+            <div class="auto-num">08</div>
+            <div class="auto-title">Product Mapping</div>
+            <code class="auto-code">Products = { Column → Product → Category → Unit }</code>
+            <p class="auto-meaning"><strong>What it does:</strong> Maps raw Excel columns into structured business data — a single source of truth for product names, categories, and units.</p>
+          </div>
+
+        </div>
+
+        <!-- FINAL MESSAGE -->
+        <div class="final-message">
+          <div class="final-message-icon">⚡</div>
+          <div class="final-message-text">
+            From manual Excel<br>
+            <em>→ fully automated Power BI pipeline.</em>
+          </div>
+        </div>
+
+        <!-- SPACER -->
+        <div style="height: 40px;"></div>
+
+      </div><!-- /.scroll-content -->
+    </div><!-- /.scroll-container -->
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 12 — WHAT WE DELIVERED (NEW OVERVIEW SLIDE)
+═══════════════════════════════════════════════════════ -->
+<section class="slide bg-blue" id="s12" data-label="Delivered">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="grid-lines"></div>
+
+  <div class="corner-mark"><span class="mark-dot"></span>Section 10 · Outcomes</div>
+  <div class="slide-num">12 / 16</div>
+
+  <div class="slide-inner">
+    <div class="stagger">
+      <div class="kicker">Outcomes</div>
+      <h2 class="section-title">What the <em class="underline">Dashboards</em> Delivered</h2>
+      <div class="divider"></div>
+
+      <!-- 3 dashboard summary columns -->
+      <div class="grid-3" style="gap: 20px; margin-top: 18px;">
+
+        <!-- PTA/PX -->
+        <div class="card" style="padding: 26px 24px; border-top: 3px solid var(--blue); display: flex; flex-direction: column; gap: 12px;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, var(--blue), var(--sky)); display: flex; align-items: center; justify-content: center; font-size: 22px;">🏭</div>
+            <div>
+              <div class="eyebrow" style="font-size: 9px;">Dashboard 01</div>
+              <strong style="font-family: 'Fraunces', serif; font-weight: 500; font-size: 18px; color: var(--ink); letter-spacing: -0.01em;">PTA/PX Database</strong>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">
+            <div style="display: flex; gap: 10px; align-items: flex-start;">
+              <span style="color: var(--blue); font-weight: 600; flex-shrink: 0;">✓</span>
+              <span style="font-size: 13px; color: var(--text-soft); line-height: 1.5;">Live operation rate tracking</span>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: flex-start;">
+              <span style="color: var(--blue); font-weight: 600; flex-shrink: 0;">✓</span>
+              <span style="font-size: 13px; color: var(--text-soft); line-height: 1.5;">Actual vs Target production</span>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: flex-start;">
+              <span style="color: var(--blue); font-weight: 600; flex-shrink: 0;">✓</span>
+              <span style="font-size: 13px; color: var(--text-soft); line-height: 1.5;">Top producer ranking</span>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: flex-start;">
+              <span style="color: var(--blue); font-weight: 600; flex-shrink: 0;">✓</span>
+              <span style="font-size: 13px; color: var(--text-soft); line-height: 1.5;">Multi-year trend analysis</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- EXIM -->
+        <div class="card" style="padding: 26px 24px; border-top: 3px solid var(--sky); display: flex; flex-direction: column; gap: 12px;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, var(--sky), var(--blue)); display: flex; align-items: center; justify-content: center; font-size: 22px;">🚢</div>
+            <div>
+              <div class="eyebrow" style="font-size: 9px;">Dashboard 02</div>
+              <strong style="font-family: 'Fraunces', serif; font-weight: 500; font-size: 18px; color: var(--ink); letter-spacing: -0.01em;">EXIM Overview</strong>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">
+            <div style="display: flex; gap: 10px; align-items: flex-start;">
+              <span style="color: var(--sky); font-weight: 600; flex-shrink: 0;">✓</span>
+              <span style="font-size: 13px; color: var(--text-soft); line-height: 1.5;">Export & import visibility</span>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: flex-start;">
+              <span style="color: var(--sky); font-weight: 600; flex-shrink: 0;">✓</span>
+              <span style="font-size: 13px; color: var(--text-soft); line-height: 1.5;">YoY growth analysis</span>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: flex-start;">
+              <span style="color: var(--sky); font-weight: 600; flex-shrink: 0;">✓</span>
+              <span style="font-size: 13px; color: var(--text-soft); line-height: 1.5;">Trade balance tracking</span>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: flex-start;">
+              <span style="color: var(--sky); font-weight: 600; flex-shrink: 0;">✓</span>
+              <span style="font-size: 13px; color: var(--text-soft); line-height: 1.5;">Category & HS-code drilldowns</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Daily Pricing -->
+        <div class="card" style="padding: 26px 24px; border-top: 3px solid var(--gold); display: flex; flex-direction: column; gap: 12px; position: relative;">
+          <div style="position: absolute; top: 14px; right: 14px; font-family: 'JetBrains Mono', monospace; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); font-weight: 600;">⚡ AUTO</div>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, var(--blue-deep), var(--blue)); display: flex; align-items: center; justify-content: center; font-size: 22px;">💹</div>
+            <div>
+              <div class="eyebrow" style="font-size: 9px;">Dashboard 03</div>
+              <strong style="font-family: 'Fraunces', serif; font-weight: 500; font-size: 18px; color: var(--ink); letter-spacing: -0.01em;">Daily Pricing</strong>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">
+            <div style="display: flex; gap: 10px; align-items: flex-start;">
+              <span style="color: var(--blue-deep); font-weight: 600; flex-shrink: 0;">✓</span>
+              <span style="font-size: 13px; color: var(--text-soft); line-height: 1.5;">Fully automated pipeline</span>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: flex-start;">
+              <span style="color: var(--blue-deep); font-weight: 600; flex-shrink: 0;">✓</span>
+              <span style="font-size: 13px; color: var(--text-soft); line-height: 1.5;">8 products tracked daily</span>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: flex-start;">
+              <span style="color: var(--blue-deep); font-weight: 600; flex-shrink: 0;">✓</span>
+              <span style="font-size: 13px; color: var(--text-soft); line-height: 1.5;">Stock-ticker watchlist UI</span>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: flex-start;">
+              <span style="color: var(--blue-deep); font-weight: 600; flex-shrink: 0;">✓</span>
+              <span style="font-size: 13px; color: var(--text-soft); line-height: 1.5;">Auto monthly averages</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Overall outcome strip -->
+      <div style="margin-top: 26px; padding: 22px 28px; background: var(--white); border-radius: 16px; box-shadow: var(--shadow-sm); border: 1px solid var(--line); display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;">
+        <div>
+          <div class="metric-val" style="font-size: 34px; color: var(--ink);"><em>3</em></div>
+          <div class="metric-lbl" style="color: var(--text-soft);">Dashboards Delivered</div>
+        </div>
+        <div>
+          <div class="metric-val" style="font-size: 34px; color: var(--ink);"><em>−90%</em></div>
+          <div class="metric-lbl" style="color: var(--text-soft);">Reporting Time</div>
+        </div>
+        <div>
+          <div class="metric-val" style="font-size: 34px; color: var(--ink);"><em>99%+</em></div>
+          <div class="metric-lbl" style="color: var(--text-soft);">Data Accuracy</div>
+        </div>
+        <div>
+          <div class="metric-val" style="font-size: 34px; color: var(--ink);"><em>Daily</em></div>
+          <div class="metric-lbl" style="color: var(--text-soft);">Auto-Refresh</div>
+        </div>
       </div>
     </div>
   </div>
-  <div class="fb"></div>
-</div>
 
-<!-- ═══════════════════════════════════════
+  <div class="footer-rule">
+    <span>12 · Outcomes</span>
+    <span>What the Dashboards Delivered</span>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 13 — CHALLENGE & RESPONSE
+═══════════════════════════════════════════════════════ -->
+<section class="slide bg-paper" id="s13" data-label="Challenge">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="grid-lines"></div>
+
+  <div class="corner-mark"><span class="mark-dot"></span>Section 10</div>
+  <div class="slide-num">13 / 16</div>
+
+  <div class="slide-inner">
+    <div class="stagger">
+      <div class="kicker">Learnings</div>
+      <h2 class="section-title">Challenge <em class="underline">&</em> Response</h2>
+      <div class="divider"></div>
+
+      <div class="grid-2" style="gap: 32px; margin-top: 14px;">
+        <div>
+          <h3 style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--red); margin-bottom: 16px;">⚠ Challenges Faced</h3>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div class="card" style="background: rgba(192,57,43,0.04); border-color: rgba(192,57,43,0.18);">
+              <div style="display: flex; gap: 14px; align-items: flex-start;">
+                <div style="font-size: 22px; flex-shrink: 0;">📋</div>
+                <div>
+                  <strong style="font-size: 14px; color: var(--ink);">Inconsistent Data Formats</strong>
+                  <p style="font-size: 13px; color: var(--text-soft); line-height: 1.6; margin-top: 4px;">Different teams used different date formats, column names, and unit representations across Excel files — consolidation was impossible without manual fixing.</p>
+                </div>
+              </div>
+            </div>
+            <div class="card" style="background: rgba(192,57,43,0.04); border-color: rgba(192,57,43,0.18);">
+              <div style="display: flex; gap: 14px; align-items: flex-start;">
+                <div style="font-size: 22px; flex-shrink: 0;">🕐</div>
+                <div>
+                  <strong style="font-size: 14px; color: var(--ink);">Manual Reporting Inefficiency</strong>
+                  <p style="font-size: 13px; color: var(--text-soft); line-height: 1.6; margin-top: 4px;">Weekly reports required 2–4 hours of manual compilation — prone to errors and always one step behind current business reality.</p>
+                </div>
+              </div>
+            </div>
+            <div class="card" style="background: rgba(192,57,43,0.04); border-color: rgba(192,57,43,0.18);">
+              <div style="display: flex; gap: 14px; align-items: flex-start;">
+                <div style="font-size: 22px; flex-shrink: 0;">🔁</div>
+                <div>
+                  <strong style="font-size: 14px; color: var(--ink);">Data Duplication & Silos</strong>
+                  <p style="font-size: 13px; color: var(--text-soft); line-height: 1.6; margin-top: 4px;">Multiple versions of the same data existed across departments, causing confusion and contradicting reports — leading to distrust in numbers.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h3 style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--green); margin-bottom: 16px;">✓ How We Responded</h3>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div class="card" style="background: rgba(30,143,92,0.04); border-color: rgba(30,143,92,0.2);">
+              <div style="display: flex; gap: 14px; align-items: flex-start;">
+                <div style="font-size: 22px; flex-shrink: 0;">📐</div>
+                <div>
+                  <strong style="font-size: 14px; color: var(--ink);">Standardized Excel Input Templates</strong>
+                  <p style="font-size: 13px; color: var(--text-soft); line-height: 1.6; margin-top: 4px;">Designed locked templates with data validation, standardized column headers, and enforced date/unit formats — eliminating inconsistency at the source.</p>
+                </div>
+              </div>
+            </div>
+            <div class="card" style="background: rgba(30,143,92,0.04); border-color: rgba(30,143,92,0.2);">
+              <div style="display: flex; gap: 14px; align-items: flex-start;">
+                <div style="font-size: 22px; flex-shrink: 0;">⚡</div>
+                <div>
+                  <strong style="font-size: 14px; color: var(--ink);">Automated Power BI Dashboards</strong>
+                  <p style="font-size: 13px; color: var(--text-soft); line-height: 1.6; margin-top: 4px;">Replaced manual Excel with dashboards that refresh daily — reducing reporting effort from hours to zero, while improving accuracy and timeliness.</p>
+                </div>
+              </div>
+            </div>
+            <div class="card" style="background: rgba(30,143,92,0.04); border-color: rgba(30,143,92,0.2);">
+              <div style="display: flex; gap: 14px; align-items: flex-start;">
+                <div style="font-size: 22px; flex-shrink: 0;">🔧</div>
+                <div>
+                  <strong style="font-size: 14px; color: var(--ink);">Power Query Data Cleaning</strong>
+                  <p style="font-size: 13px; color: var(--text-soft); line-height: 1.6; margin-top: 4px;">Built reusable Power Query scripts to detect duplicates, normalize formats, and merge data from all sources into a single verified master dataset.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-rule">
+    <span>13 · Challenge & Response</span>
+    <span>Turning Obstacles into Systems</span>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
      SLIDE 13 — TARGET & PLAN
-════════════════════════════════════════ -->
-<div class="slide s-light" id="s13">
-  <div class="grid-l"></div>
-  <div class="slide-inner">
-    <div class="kk">Section 11</div>
-    <h2 style="font-size:34px;color:var(--navy);">Target &amp; <span class="anim-ul" style="color:var(--blue2);">Plan</span></h2>
-    <div class="div"></div>
+═══════════════════════════════════════════════════════ -->
+<section class="slide bg-deep" id="s14" data-label="Target">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="grid-lines"></div>
 
-    <div class="g2" style="gap:30px;">
-      <div>
-        <h3 style="font-size:12px;color:var(--blue2);text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;">📅 Roadmap</h3>
-        <div class="timeline">
-          <div class="t-item">
-            <div class="t-dot"></div>
-            <div class="t-year">Phase 1 — Months 1–2</div>
-            <div class="card" style="padding:12px 16px;margin-top:4px;"><strong style="font-size:13px;color:var(--navy);">Foundation &amp; Data Standardization</strong><p style="font-size:11.5px;color:var(--gray);margin-top:4px;line-height:1.5;">Audit all existing Excel files, create standardized input templates, establish data dictionary, and set up Power BI workspace</p></div>
-          </div>
-          <div class="t-item">
-            <div class="t-dot"></div>
-            <div class="t-year">Phase 2 — Months 3–4</div>
-            <div class="card" style="padding:12px 16px;margin-top:4px;"><strong style="font-size:13px;color:var(--navy);">Dashboard Build &amp; Testing</strong><p style="font-size:11.5px;color:var(--gray);margin-top:4px;line-height:1.5;">Develop Executive, EXIM, and Pricing dashboards; run UAT with stakeholders; fix issues and validate all KPIs</p></div>
-          </div>
-          <div class="t-item" style="margin-bottom:0;">
-            <div class="t-dot"></div>
-            <div class="t-year">Phase 3 — Month 5 onwards</div>
-            <div class="card" style="padding:12px 16px;margin-top:4px;"><strong style="font-size:13px;color:var(--navy);">Automation, Training &amp; Expansion</strong><p style="font-size:11.5px;color:var(--gray);margin-top:4px;line-height:1.5;">Deploy automated refresh; train end-users; expand to additional product lines and business functions</p></div>
+  <div class="corner-mark"><span class="mark-dot"></span>Section 11</div>
+  <div class="slide-num">14 / 16</div>
+
+  <div class="slide-inner">
+    <div class="stagger">
+      <div class="kicker">Roadmap</div>
+      <h2 class="section-title">Target <em class="underline">&</em> Plan</h2>
+      <div class="divider"></div>
+
+      <div class="grid-2" style="gap: 40px; margin-top: 14px;">
+        <!-- TARGET -->
+        <div>
+          <div class="eyebrow" style="margin-bottom: 18px;">🎯 Target</div>
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div class="card-dark" style="padding: 20px 22px;">
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <div style="width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, var(--blue), var(--sky)); display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-style: italic; font-weight: 500; font-size: 20px; color: white; flex-shrink: 0;">01</div>
+                <div>
+                  <strong style="font-family: 'Fraunces', serif; font-weight: 500; font-size: 18px; color: var(--white);">Digitalize Reporting</strong>
+                  <p style="font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 2px;">From Excel to Power BI</p>
+                </div>
+              </div>
+            </div>
+            <div class="card-dark" style="padding: 20px 22px;">
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <div style="width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, var(--blue), var(--sky)); display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-style: italic; font-weight: 500; font-size: 20px; color: white; flex-shrink: 0;">02</div>
+                <div>
+                  <strong style="font-family: 'Fraunces', serif; font-weight: 500; font-size: 18px; color: var(--white);">Improve Accuracy & Efficiency</strong>
+                  <p style="font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 2px;">Better data, less effort</p>
+                </div>
+              </div>
+            </div>
+            <div class="card-dark" style="padding: 20px 22px;">
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <div style="width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, var(--blue), var(--sky)); display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-style: italic; font-weight: 500; font-size: 20px; color: white; flex-shrink: 0;">03</div>
+                <div>
+                  <strong style="font-family: 'Fraunces', serif; font-weight: 500; font-size: 18px; color: var(--white);">Enable Real-Time Insights</strong>
+                  <p style="font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 2px;">Always-current decisions</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-      <div>
-        <h3 style="font-size:12px;color:var(--blue2);text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;">🎯 Success Targets</h3>
-        <div style="display:flex;flex-direction:column;gap:11px;">
-          <div class="card" style="display:flex;justify-content:space-between;align-items:center;">
-            <div><strong style="font-size:13px;color:var(--navy);">Reporting Time Reduction</strong><p style="font-size:11px;color:var(--gray);margin-top:2px;">From manual weekly Excel → automated daily refresh</p></div>
-            <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:26px;color:var(--blue2);">-90%</div>
-          </div>
-          <div class="card" style="display:flex;justify-content:space-between;align-items:center;">
-            <div><strong style="font-size:13px;color:var(--navy);">Data Accuracy Improvement</strong><p style="font-size:11px;color:var(--gray);margin-top:2px;">Validated KPIs vs source after full QA cycle</p></div>
-            <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:26px;color:var(--blue2);">99%+</div>
-          </div>
-          <div class="card" style="display:flex;justify-content:space-between;align-items:center;">
-            <div><strong style="font-size:13px;color:var(--navy);">Dashboards Delivered</strong><p style="font-size:11px;color:var(--gray);margin-top:2px;">Executive, EXIM, Daily Pricing</p></div>
-            <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:26px;color:var(--blue2);">3</div>
-          </div>
-          <div class="card" style="display:flex;justify-content:space-between;align-items:center;">
-            <div><strong style="font-size:13px;color:var(--navy);">Stakeholders Trained</strong><p style="font-size:11px;color:var(--gray);margin-top:2px;">Marketing, Sales, Operations, Management</p></div>
-            <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:26px;color:var(--blue2);">10+</div>
+
+        <!-- PLAN -->
+        <div>
+          <div class="eyebrow" style="margin-bottom: 18px;">🗺 Plan</div>
+          <div class="timeline">
+            <div class="t-item">
+              <div class="t-dot"></div>
+              <div class="t-year">Step 01</div>
+              <div class="card-dark" style="padding: 12px 18px;">
+                <strong class="card-title" style="font-size: 14px;">Analyze & Clean Data</strong>
+              </div>
+            </div>
+            <div class="t-item">
+              <div class="t-dot"></div>
+              <div class="t-year">Step 02</div>
+              <div class="card-dark" style="padding: 12px 18px;">
+                <strong class="card-title" style="font-size: 14px;">Build Power BI Dashboards</strong>
+              </div>
+            </div>
+            <div class="t-item">
+              <div class="t-dot"></div>
+              <div class="t-year">Step 03</div>
+              <div class="card-dark" style="padding: 12px 18px;">
+                <strong class="card-title" style="font-size: 14px;">Validate & Optimize Reporting</strong>
+              </div>
+            </div>
+            <div class="t-item" style="margin-bottom: 0;">
+              <div class="t-dot"></div>
+              <div class="t-year">Step 04</div>
+              <div class="card-dark" style="padding: 12px 18px;">
+                <strong class="card-title" style="font-size: 14px;">Align with Business Needs</strong>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="fb"></div>
-</div>
 
-<!-- ═══════════════════════════════════════
+  <div class="footer-rule">
+    <span>14 · Target & Plan</span>
+    <span>Goals & Execution Steps</span>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
      SLIDE 14 — RECOMMENDATIONS
-════════════════════════════════════════ -->
-<div class="slide s-white" id="s14">
-  <div class="grid-l"></div>
-  <div class="slide-inner">
-    <div class="kk">Section 12</div>
-    <h2 style="font-size:34px;color:var(--navy);"><span class="anim-ul" style="color:var(--blue2);">Recommendations</span> — Next Steps</h2>
-    <div class="div"></div>
+═══════════════════════════════════════════════════════ -->
+<section class="slide bg-paper" id="s15" data-label="Next">
+  <div class="blob blob-1"></div>
+  <div class="grid-lines"></div>
 
-    <div class="g2" style="gap:18px;">
-      <div style="display:flex;flex-direction:column;gap:12px;">
-        <div class="card" style="border-top:3px solid var(--blue2);">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><div style="width:34px;height:34px;border-radius:10px;background:rgba(37,99,235,.1);display:flex;align-items:center;justify-content:center;font-size:17px;">🔌</div><strong style="font-size:13.5px;color:var(--blue2);">Integrate Live Data Sources</strong></div>
-          <p style="font-size:12.5px;color:var(--text2);line-height:1.65;">Connect Power BI directly to ERP/SAP or database systems to eliminate the manual Excel upload step entirely — enabling true real-time data with zero latency.</p>
+  <div class="corner-mark"><span class="mark-dot"></span>Section 12</div>
+  <div class="slide-num">15 / 16</div>
+
+  <div class="slide-inner">
+    <div class="stagger">
+      <div class="kicker">What's Next</div>
+      <h2 class="section-title"><em class="underline">Recommendations</em> — Next Steps</h2>
+      <div class="divider"></div>
+
+      <div class="grid-2" style="gap: 20px; margin-top: 14px;">
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <div class="card" style="border-top: 3px solid var(--blue);">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+              <div style="width: 40px; height: 40px; border-radius: 12px; background: rgba(33,85,200,0.12); display: flex; align-items: center; justify-content: center; font-size: 18px;">🔌</div>
+              <strong style="font-size: 15px; color: var(--blue-deep);">Expand Data Sources</strong>
+            </div>
+            <p style="font-size: 13px; color: var(--text-soft); line-height: 1.7;">Connect directly to ERP & CRM — remove Excel as intermediate.</p>
+          </div>
+          <div class="card" style="border-top: 3px solid var(--green);">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+              <div style="width: 40px; height: 40px; border-radius: 12px; background: rgba(30,143,92,0.12); display: flex; align-items: center; justify-content: center; font-size: 18px;">🔔</div>
+              <strong style="font-size: 15px; color: var(--green);">Automated Alerts</strong>
+            </div>
+            <p style="font-size: 13px; color: var(--text-soft); line-height: 1.7;">Notify stakeholders when KPIs cross thresholds.</p>
+          </div>
         </div>
-        <div class="card" style="border-top:3px solid #3B82F6;">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><div style="width:34px;height:34px;border-radius:10px;background:rgba(59,130,246,.1);display:flex;align-items:center;justify-content:center;font-size:17px;">📱</div><strong style="font-size:13.5px;color:#3B82F6;">Mobile Dashboard Access</strong></div>
-          <p style="font-size:12.5px;color:var(--text2);line-height:1.65;">Publish dashboards to Power BI Mobile so executives can access key metrics anytime, anywhere — ensuring critical decisions are never delayed.</p>
-        </div>
-        <div class="card" style="border-top:3px solid #16A34A;">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><div style="width:34px;height:34px;border-radius:10px;background:rgba(22,163,74,.1);display:flex;align-items:center;justify-content:center;font-size:17px;">🔔</div><strong style="font-size:13.5px;color:#16A34A;">Automated Alerts &amp; Notifications</strong></div>
-          <p style="font-size:12.5px;color:var(--text2);line-height:1.65;">Set up Power BI data-driven alerts to automatically notify stakeholders when pricing, volume, or KPIs breach defined thresholds — enabling proactive response.</p>
-        </div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:12px;">
-        <div class="card" style="border-top:3px solid #7C3AED;">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><div style="width:34px;height:34px;border-radius:10px;background:rgba(124,58,237,.1);display:flex;align-items:center;justify-content:center;font-size:17px;">🤖</div><strong style="font-size:13.5px;color:#7C3AED;">AI-Powered Forecasting</strong></div>
-          <p style="font-size:12.5px;color:var(--text2);line-height:1.65;">Leverage Power BI's built-in AI features (Q&amp;A, Key Influencers, Decomposition Tree) or integrate Python/R scripts for predictive pricing and demand forecasting.</p>
-        </div>
-        <div class="card" style="border-top:3px solid var(--accent);">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><div style="width:34px;height:34px;border-radius:10px;background:rgba(245,158,11,.12);display:flex;align-items:center;justify-content:center;font-size:17px;">📚</div><strong style="font-size:13.5px;color:var(--gold);">Data Literacy &amp; Training Program</strong></div>
-          <p style="font-size:12.5px;color:var(--text2);line-height:1.65;">Roll out a structured training program across marketing and operations — ensuring all users can independently navigate dashboards and extract insights without analyst dependency.</p>
-        </div>
-        <div style="padding:14px 18px;background:rgba(37,99,235,.07);border-radius:12px;border:1px solid rgba(37,99,235,.18);">
-          <strong style="font-size:11px;color:var(--blue2);text-transform:uppercase;letter-spacing:1px;">🎯 Final Goal</strong>
-          <p style="font-size:12.5px;color:var(--text2);margin-top:7px;line-height:1.65;">Build a fully self-service analytics culture where every team member can answer their own data questions — making the organization faster, smarter, and more competitive.</p>
+
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <div class="card" style="border-top: 3px solid var(--sky);">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+              <div style="width: 40px; height: 40px; border-radius: 12px; background: rgba(92,143,214,0.15); display: flex; align-items: center; justify-content: center; font-size: 18px;">🤖</div>
+              <strong style="font-size: 15px; color: var(--sky);">AI-Powered Forecasting</strong>
+            </div>
+            <p style="font-size: 13px; color: var(--text-soft); line-height: 1.7;">Q&A, Key Influencers, predictive pricing with Python/R.</p>
+          </div>
+          <div class="card" style="border-top: 3px solid var(--gold);">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+              <div style="width: 40px; height: 40px; border-radius: 12px; background: rgba(200,155,60,0.15); display: flex; align-items: center; justify-content: center; font-size: 18px;">📚</div>
+              <strong style="font-size: 15px; color: var(--gold);">Data Literacy Program</strong>
+            </div>
+            <p style="font-size: 13px; color: var(--text-soft); line-height: 1.7;">Train teams to navigate and extract insights independently.</p>
+          </div>
+          <div style="padding: 18px 22px; background: linear-gradient(135deg, rgba(33,85,200,0.08), rgba(92,143,214,0.06)); border-radius: 14px; border: 1px solid rgba(33,85,200,0.18);">
+            <div class="eyebrow">🎯 Final Goal</div>
+            <p style="font-size: 14px; color: var(--ink); line-height: 1.6; margin-top: 6px; font-weight: 500;">
+              A self-service analytics culture — every team answers their own data questions.
+            </p>
+          </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="fb"></div>
-</div>
 
-<!-- ═══════════════════════════════════════
-     SLIDE 15 — THANK YOU
-════════════════════════════════════════ -->
-<div class="slide s-cover center" id="s15">
-  <div class="grid-w"></div>
-  <div class="deco" style="width:600px;height:600px;left:50%;top:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(37,99,235,.4) 0%,transparent 70%);filter:blur(60px);"></div>
-  <div class="deco" style="width:240px;height:240px;right:15%;top:15%;background:radial-gradient(circle,rgba(245,158,11,.25) 0%,transparent 70%);filter:blur(30px);animation:drift 16s ease-in-out infinite alternate;"></div>
+  <div class="footer-rule">
+    <span>15 · Recommendations</span>
+    <span>Four Strategic Extensions</span>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     SLIDE 15 — DASHBOARD ACCESS + THANK YOU
+═══════════════════════════════════════════════════════ -->
+<section class="slide bg-deep" id="s16" data-label="Access">
+  <div class="blob blob-1" style="width: 700px; height: 700px; left: 50%; top: 30%; transform: translateX(-50%); opacity: 0.3;"></div>
+  <div class="grid-lines"></div>
+
+  <div class="corner-mark"><span class="mark-dot"></span>Dashboard Access · 2026</div>
+  <div class="slide-num">16 / 16</div>
 
   <div class="slide-inner center">
-    <div style="margin-bottom:18px;">
-      <img src="https://raw.githubusercontent.com/azhar211102/azhar211102github.io/ebed4fe5dbbbad1f965d0e519b13fc7b1ed0f2ae/img/mcci-removebg-preview.png"
-           alt="MCCI Logo" style="height:44px;filter:brightness(0) invert(1);opacity:.85;"
-           onerror="this.style.display='none'">
-    </div>
-    <div class="kk-w">2026 · Internship Final Project</div>
-    <h1 style="font-size:clamp(46px,7vw,82px);line-height:1.1;margin-bottom:20px;color:#fff;">
-      Thank You<br><span style="color:var(--accent);" class="anim-ul anim-ul-w">For Your Time.</span>
-    </h1>
-    <p style="font-size:15px;color:rgba(255,255,255,.7);max-width:520px;line-height:1.7;margin-bottom:32px;">We look forward to building a data-driven culture that empowers smarter, faster, and more confident business decisions through the power of automation and analytics.</p>
+    <div class="stagger" style="max-width: 1100px; width: 100%; text-align: center;">
+      <div class="kicker" style="margin: 0 auto;">Internship Final Project</div>
+      <h1 class="closing-hero" style="color: var(--white); margin-top: 20px;">
+        Thank You.<br><em>Explore the dashboards.</em>
+      </h1>
+      <p class="lead" style="color: rgba(255,255,255,0.8); max-width: 580px; margin: 28px auto 0;">
+        We look forward to building a data-driven culture that empowers smarter, faster, and more confident business decisions through automation and analytics.
+      </p>
 
-    <div style="display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-bottom:36px;">
-      <div style="padding:12px 22px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:14px;backdrop-filter:blur(8px);"><div style="font-size:10px;color:rgba(255,255,255,.6);letter-spacing:1px;text-transform:uppercase;">Presented by</div><div style="font-size:15px;font-weight:600;color:#fff;margin-top:4px;">Azhar Amirul Abid</div></div>
-      <div style="padding:12px 22px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:14px;backdrop-filter:blur(8px);"><div style="font-size:10px;color:rgba(255,255,255,.6);letter-spacing:1px;text-transform:uppercase;">Role</div><div style="font-size:15px;font-weight:600;color:#fff;margin-top:4px;">Data Process / BI Analyst</div></div>
-      <div style="padding:12px 22px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:14px;backdrop-filter:blur(8px);"><div style="font-size:10px;color:rgba(255,255,255,.6);letter-spacing:1px;text-transform:uppercase;">Year</div><div style="font-size:15px;font-weight:600;color:var(--accent);margin-top:4px;">2026</div></div>
-    </div>
+      <!-- 3 DASHBOARD BUTTONS -->
+      <div class="grid-3" style="margin-top: 44px; text-align: left;">
+        <a href="https://app.powerbi.com/groups/me/reports/fe630bd4-547e-4601-bd76-839e6fc0f918/9720e6143e6674e22ae9?experience=power-bi" target="_blank" class="btn-dash">
+          <div class="btn-icon">🏭</div>
+          <div class="btn-eyebrow">Dashboard 01</div>
+          <div class="btn-title">PTA/PX Database</div>
+          <div class="btn-sub">Operations monitoring · Production rates</div>
+        </a>
+        <a href="https://app.powerbi.com/groups/me/reports/c1cf4868-a4a5-4a13-8af6-39a1185cfcaa/ad2b1bd0f473fdaa4aaa?experience=power-bi" target="_blank" class="btn-dash">
+          <div class="btn-icon">🚢</div>
+          <div class="btn-eyebrow">Dashboard 02</div>
+          <div class="btn-title">EXIM Overview</div>
+          <div class="btn-sub">Trade flows · Export & Import analytics</div>
+        </a>
+        <a href="https://app.powerbi.com/groups/me/reports/f8d4896a-012c-4af0-b74a-24bc7baecfac/75b0eed49e0074cc4766?experience=power-bi" target="_blank" class="btn-dash">
+          <div class="btn-icon">💹</div>
+          <div class="btn-eyebrow">Dashboard 03 · Automated</div>
+          <div class="btn-title">Daily Pricing Monitor</div>
+          <div class="btn-sub">Auto pipeline · 8 products tracked daily</div>
+        </a>
+      </div>
 
-    <div style="display:flex;gap:9px;justify-content:center;flex-wrap:wrap;">
-      <div class="pill" style="background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.25);">3 Dashboards Delivered</div>
-      <div class="pill" style="background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.25);">-90% Report Time</div>
-      <div class="pill" style="background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.25);">Fully Automated</div>
-      <div class="pill" style="background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.25);">Power BI + DAX + Deneb</div>
+      <!-- META -->
+      <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: 44px;">
+        <div style="padding: 12px 22px; background: rgba(255,255,255,0.06); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.12); border-radius: 14px;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.6);">Presented by</div>
+          <div style="font-family: 'Fraunces', serif; font-weight: 500; font-size: 16px; color: var(--white); margin-top: 4px;">Azhar Amirul Abid</div>
+        </div>
+        <div style="padding: 12px 22px; background: rgba(255,255,255,0.06); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.12); border-radius: 14px;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.6);">Role</div>
+          <div style="font-family: 'Fraunces', serif; font-weight: 500; font-size: 16px; color: var(--white); margin-top: 4px;">Data Process & BI Analyst</div>
+        </div>
+        <div style="padding: 12px 22px; background: rgba(255,255,255,0.06); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.12); border-radius: 14px;">
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.6);">Year</div>
+          <div style="font-family: 'Fraunces', serif; font-weight: 500; font-size: 16px; color: var(--sky-soft); margin-top: 4px;">2026</div>
+        </div>
+      </div>
     </div>
   </div>
-  <div class="fb-w"></div>
-</div>
+</section>
 
-</div><!-- end deck -->
+</div><!-- /.deck -->
 
-<!-- NAVIGATION -->
+<!-- ═══════════════════════════════════════════════════════
+     SIDE DOTS NAVIGATION
+═══════════════════════════════════════════════════════ -->
+<div class="side-dots" id="sideDots"></div>
+
+<!-- ═══════════════════════════════════════════════════════
+     BOTTOM NAV
+═══════════════════════════════════════════════════════ -->
 <nav class="nav">
-  <button onclick="go(-1)" title="Previous">&#8592;</button>
-  <div class="dots" id="dots"></div>
-  <span class="counter" id="counter">1 / 15</span>
-  <button onclick="go(1)" title="Next">&#8594;</button>
+  <button class="nav-btn" id="prevBtn" title="Previous (←)" aria-label="Previous slide">←</button>
+  <div class="nav-counter"><span class="cur" id="curNum">01</span> / <span id="totalNum">15</span></div>
+  <button class="nav-btn" id="nextBtn" title="Next (→)" aria-label="Next slide">→</button>
 </nav>
 
 <script>
-  const slides = document.querySelectorAll('.slide');
-  const dotsEl = document.getElementById('dots');
-  const counterEl = document.getElementById('counter');
+(function() {
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const sideDotsEl = document.getElementById('sideDots');
+  const curNumEl = document.getElementById('curNum');
+  const totalNumEl = document.getElementById('totalNum');
   const progressEl = document.getElementById('progress');
-  let cur = 0;
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
   const N = slides.length;
+  let cur = 0;
+  let isTransitioning = false;
 
-  for(let i=0;i<N;i++){
-    const d = document.createElement('div');
-    d.className = 'dot' + (i===0?' on':'');
-    d.onclick = ()=>goTo(i);
-    dotsEl.appendChild(d);
-  }
+  totalNumEl.textContent = String(N).padStart(2, '0');
 
-  function goTo(n){
-    slides[cur].classList.remove('active');
-    cur = (n+N)%N;
-    slides[cur].classList.add('active');
-    // Scroll back to top if scrollable
-    const sc = slides[cur].querySelector('.si-scroll');
-    if(sc) sc.scrollTop = 0;
-    document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('on',i===cur));
-    counterEl.textContent = `${cur+1} / ${N}`;
-    progressEl.style.width = `${((cur+1)/N)*100}%`;
-  }
-
-  function go(d){ goTo(cur+d); }
-
-  document.addEventListener('keydown', e=>{
-    if(e.key==='ArrowRight'||e.key==='ArrowDown') go(1);
-    if(e.key==='ArrowLeft'||e.key==='ArrowUp') go(-1);
+  // Build side dots
+  slides.forEach((s, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'side-dot' + (i === 0 ? ' active' : '');
+    const label = document.createElement('div');
+    label.className = 'side-dot-label';
+    label.textContent = s.dataset.label || `Slide ${i+1}`;
+    dot.appendChild(label);
+    dot.addEventListener('click', () => goTo(i));
+    sideDotsEl.appendChild(dot);
   });
 
-  let tx=0;
-  document.addEventListener('touchstart',e=>tx=e.touches[0].clientX,{passive:true});
-  document.addEventListener('touchend',e=>{
-    const dx=tx-e.changedTouches[0].clientX;
-    if(Math.abs(dx)>50) go(dx>0?1:-1);
-  },{passive:true});
+  function goTo(n) {
+    if (isTransitioning || n === cur || n < 0 || n >= N) return;
+    isTransitioning = true;
+    const prev = slides[cur];
+    const next = slides[n];
 
-  progressEl.style.width = `${(1/N)*100}%`;
+    // leaving animation
+    prev.classList.add('leaving');
+    prev.classList.remove('active');
+
+    // small delay for leaving, then enter next
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        prev.classList.remove('leaving');
+        next.classList.add('active');
+        cur = n;
+
+        // update UI
+        curNumEl.textContent = String(cur + 1).padStart(2, '0');
+        progressEl.style.width = `${((cur + 1) / N) * 100}%`;
+        document.querySelectorAll('.side-dot').forEach((d, i) => {
+          d.classList.toggle('active', i === cur);
+        });
+
+        // reset scroll on scrollable slide
+        const scroll = next.querySelector('.scroll-container');
+        if (scroll) scroll.scrollTop = 0;
+
+        setTimeout(() => { isTransitioning = false; }, 300);
+      }, 250);
+    });
+  }
+
+  function go(d) { goTo(cur + d); }
+
+  prevBtn.addEventListener('click', () => go(-1));
+  nextBtn.addEventListener('click', () => go(1));
+
+  // Keyboard navigation — but allow scroll inside scrollable slide
+  document.addEventListener('keydown', e => {
+    const scroll = slides[cur].querySelector('.scroll-container');
+    if (scroll && (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'PageDown' || e.key === 'PageUp')) {
+      // Let the user scroll inside the container naturally with up/down keys
+      return;
+    }
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); go(1); }
+    if (e.key === 'ArrowLeft'  || e.key === 'PageUp') { e.preventDefault(); go(-1); }
+    if (e.key === 'Home') { e.preventDefault(); goTo(0); }
+    if (e.key === 'End')  { e.preventDefault(); goTo(N - 1); }
+  });
+
+  // Touch swipe (horizontal)
+  let touchStartX = 0;
+  let touchStartY = 0;
+  document.addEventListener('touchstart', e => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+  document.addEventListener('touchend', e => {
+    const dx = touchStartX - e.changedTouches[0].clientX;
+    const dy = touchStartY - e.changedTouches[0].clientY;
+    // Only trigger slide change on mostly-horizontal swipes
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+      go(dx > 0 ? 1 : -1);
+    }
+  }, { passive: true });
+
+  // Init
+  progressEl.style.width = `${(1 / N) * 100}%`;
+  // ensure first slide is active on load
+  slides[0].classList.add('active');
+})();
 </script>
+
 </body>
 </html>
